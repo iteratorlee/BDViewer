@@ -1,4 +1,5 @@
-se/js/namespace'
+define([
+    'base/js/namespace'
 ], function(
     Jupyter
 ) {
