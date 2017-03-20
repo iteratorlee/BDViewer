@@ -1,12 +1,8 @@
 # table_extension
 An extension for Jupyter Notebook
 
-***
-
 ## Introduction
 This extension is for csv file view on Jupyter Notebook. When the csv file is too larg, this extension can help you open it quickly. And at the same time, you can do some simple computation.
-
-***
 
 ## Usage
 First you should make sure notebook is already installed. And support your default Python version is 3.5.
@@ -25,6 +21,6 @@ c.NotebookApp.nbserver_extensions = {
 ```
 Change directory to table_extension
 ```
-jupyter nbextension install /static/path/to/\'table_extension/static\'
+jupyter nbextension install /static/path/to/'table_extension/static'
 jupyter nbextension enable static/main
 ```
