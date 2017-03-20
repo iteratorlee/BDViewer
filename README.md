@@ -16,7 +16,7 @@ cd table_extension
 sudo cp -r ./jextension /usr/lib/python3.5
 jupyter notebook --generate-config
 ```
-Then open file \'jupyter_notebook_config.py\' and add code as follow:
+Then open file ~/.jupyter/jupyter_notebook_config.py and add code as follow:
 ```
 c = get_config()
 c.NotebookApp.nbserver_extensions = {
