@@ -5,7 +5,7 @@ jupyter notebook --generate-config
 # Modify config file to install server extension
 cp ./config/jupyter_notebook_config_bak.py ~/.jupyter/jupyter_notebook_config.py
 # Get static path of 'static' directory
-cd static
+cd table_extension
 CURRENT_PATH=$(dirname $(readlink -f "$0"))
 cd ..
 # Install and enable front-end extension
