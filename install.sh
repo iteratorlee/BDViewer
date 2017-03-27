@@ -10,4 +10,4 @@ CURRENT_PATH=$(dirname $(readlink -f "$0"))
 cd ..
 # Install and enable front-end extension
 jupyter nbextension install $CURRENT_PATH
-jupyter nbextension enable static/main
+jupyter nbextension enable table_extension/main
