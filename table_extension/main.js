@@ -1,8 +1,15 @@
 define([
-    'base/js/namespace'
+    'base/js/namespace',
+    'base/js/utils',
+    'services/config',
+    'jqueryui'
 ], function(
-    Jupyter
+    Jupyter,
+    utils,
+    configmod,
+    $
 ) {
+    function 
     function load_ipython_extension() {
 
         var handler = function () {
