@@ -3,10 +3,13 @@ from notebook.base.handlers import IPythonHandler
 import os
 import time
 
-def formatSize(bytes):
+def formatSize(_bytes):
+    '''
+    return file size (an integer)
+    '''
     try:
-        bytes = float(bytes)
-        kb = bytes / 1024
+        _bytes = float(_bytes)
+        kb = _bytes / 1024
     except:
         print("Bad format")
         return "Error"
@@ -15,11 +18,18 @@ def formatSize(bytes):
         M = kb / 1024
         if M >= 1024:
             G = M / 1024
-            return "%fG" % (G)
+            G = int(G)
+            return "%dG" % (G)
         else:
-            return "%fM" % (M)
+            M = int(M)
+            return "%dM" % (M)
     else:
-        return "%fkb" % (kb)
+        if kb >= 1:
+            kb = int(kb)
+            return "%dK" % (kb)
+        else:
+            _bytes = int(_bytes)
+            return "%dB" % _bytes
 
 class HelloWorldHandler(IPythonHandler):
     def get(self):
