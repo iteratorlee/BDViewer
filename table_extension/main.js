@@ -14,10 +14,10 @@ define([
     'use strict';
     var base_url = utils.get_body_data('baseUrl');
 
-    //var config = new Configmod.ConfigSection('tree', {base_url : base_url});
-    //config.loaded.then(function(){
-      //add_file_meta();
-    //});
+    var config = new Configmod.ConfigSection('tree', {base_url : base_url});
+    config.loaded.then(function(){
+      add_file_meta();
+    });
 
     function add_file_meta(){
         alert("hahahahsb");
@@ -51,23 +51,7 @@ define([
         events.on("notebook_loaded.Notebook", add_file_meta);
         events.on("app_initialized.DashboardApp", add_file_meta);
         //config.load();
-        /**
-        var handler = function () {
-            alert('this is an alert from my_extension!');
-        };
-
-        var action = {
-            icon: 'fa-comment-o', // a font-awesome class used on buttons, etc
-            help    : 'Show an alert',
-            help_index : 'zz',
-            handler : handler
-        };
-        var prefix = 'my_extension';
-        var action_name = 'show-alert';
-
-        var full_action_name = Jupyter.actions.register(action, action_name, prefix); // returns 'my_extension:show-alert'
-        Jupyter.toolbar.add_buttons_group([full_action_name]);
-        */
+	add_file_meta();
     }
 
     return {
