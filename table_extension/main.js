@@ -12,46 +12,74 @@ define([
     $
 ) {
     'use strict';
+	
+	$.ajaxSetup({  
+    	async : false
+	});  	
+
     var base_url = utils.get_body_data('baseUrl');
 
     var config = new Configmod.ConfigSection('tree', {base_url : base_url});
     config.loaded.then(function(){
-      add_file_meta();
+    	add_file_meta();
     });
 
     function add_file_meta(){
-        alert("hahahahsb");
         var row = $("div.list_item");
         var item = $("div.col-md-12");
-        item.each(function(){
-          $("<span/>")
-            .addClass("item_size")
-            .addClass("pull-right")
-            .width("80")
-            .appendTo(this);
+        var cnt = 0;
+		item.each(function(){
+         	$("<span/>")
+            	.addClass("item_size")
+            	.addClass("pull-right")
+            	.width("40")
+            	.appendTo(this);
         });
-        //alert(item.length);
 
-        var path = $(".item_link").attr("href");
-        //alert(path.length);
+        var path = $(".item_name");
+
+		/**
+		 * Modify file size display
+		 */
 
         var filesize = new Array();
-        for(var i = 0; i < path.length; ++i){
-          filesize[i] = $.get(utils.url_path_join(base_url, "filesize", path[i]));
+        var item_size = $(".item_size");
+        
+		for(var i = 0; i < path.length; ++i){
+			var request_url = utils.url_path_join(base_url, "filesize", path[i].innerHTML);
+          	$.get(request_url, function(data, status, dataType="text"){
+				filesize[i] = data;
+			});
         }
 
-        var item_size = $(".item_size");
-        for(var i = 0; i < item_size_array.length; ++i){
-          item_size[i].text(filesize[i]);
+        for(var i = 0; i < item_size.length; ++i){
+         	item_size[i].innerHTML = filesize[i];
         }
+
+		/**
+		 * Modify file time display
+		 */
+		
+		var filetime = new Array();
+		var item_time = $(".item_modified");
+		alert(item_time.length);
+
+		for(var i = 0; i < path.length; ++i){
+			var request_url = utils.url_path_join(base_url, "filedate", path[i].innerHTML);
+			$.get(request_url, function(data, status, dateType="text"){
+				filetime[i] = data;
+			});
+		}
+
+		for(var i = 0; i < item_time.length; ++i){
+			console.log(filetime[i]);
+			item_time[i].innerHTML = filetime[i];
+		}
+		
     }
 
     function load_ipython_extension() {
-        alert("sbsbsbsbsbsbsbsb");
-        events.on("notebook_loaded.Notebook", add_file_meta);
-        events.on("app_initialized.DashboardApp", add_file_meta);
-        //config.load();
-	add_file_meta();
+        config.load();
     }
 
     return {
