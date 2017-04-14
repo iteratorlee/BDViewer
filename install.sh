@@ -11,6 +11,7 @@ jupyter notebook --generate-config
 # Modify config file to install server extension
 echo "Copying configuration files"
 cp ./configs/jupyter_notebook_config_bak.py ~/.jupyter/jupyter_notebook_config.py
+cp ./configs/tree_bak.json ~/.jupyter/nbconfig/tree.json
 # Get static path of 'static' directory
 cd table_extension
 CURRENT_PATH=$(dirname $(readlink -f "$0"))
