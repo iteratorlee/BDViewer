@@ -2,6 +2,7 @@ from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
 import os
 import time
+import utils
 
 def formatSize(_bytes):
     '''
@@ -31,10 +32,6 @@ def formatSize(_bytes):
             _bytes = int(_bytes)
             return "%dB" % _bytes
 
-class HelloWorldHandler(IPythonHandler):
-    def get(self):
-        self.finish('Hello, world!')
-
 class FileSizeHandler(IPythonHandler):
     def get(self, _filepath):
         file_path = _filepath
@@ -58,7 +55,12 @@ class FileDateHandler(IPythonHandler):
 
 class ViewTableHandler(IPythonHandler):
     def get(self, _filepath):
-        self.write()
+        file_path = _filepath
+        if not os.path.exists(file_path):
+            self.write("File does not exist")
+            return
+        beg_lines = utils.get_lines_skip_rows(file_path, 0, 1000)
+        self.write(beg_lines)
 
 def load_jupyter_server_extension(nb_server_app):
     """
@@ -69,17 +71,13 @@ def load_jupyter_server_extension(nb_server_app):
     """
     web_app = nb_server_app.web_app
     host_pattern = '.*$'
-    print(web_app.settings['base_url'])
 
     #route patterns
-    route_pattern = url_path_join(web_app.settings['base_url'], '/hello')
     file_size_pattern = url_path_join(web_app.settings['base_url'], '/filesize/(.+$)')
-    print(file_size_pattern)
     file_date_pattern = url_path_join(web_app.settings['base_url'], '/filedate/(.+$)')
-    #file path regx
-    _file_path = r'.*$'
+    view_table_pattern = url_path_join(web_app.settings['base_url'], '/table_view/(.+$)')
     web_app.add_handlers(host_pattern, [
-                (route_pattern, HelloWorldHandler),
                 (file_size_pattern, FileSizeHandler),
-                (file_date_pattern, FileDateHandler)
+                (file_date_pattern, FileDateHandler),
+                (view_table_pattern, ViewTableHandler)
                 ])

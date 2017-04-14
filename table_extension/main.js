@@ -22,6 +22,7 @@ define([
     var config = new Configmod.ConfigSection('tree', {base_url : base_url});
     config.loaded.then(function(){
     	add_file_meta();
+		bind_table_page();
     });
 
 	/**
@@ -82,7 +83,14 @@ define([
 	 * When a file is a csv file, bind a table page to its open action.
 	 */
 	function bind_table_page(){
-		
+		var links = $(".item_link");
+		var names = $(".item_name");
+
+		console.log(links.length + " " + names.length);
+		for(var i = 0; i < links.length; ++i){
+			var table_path = utils.url_path_join(base_url, "table_view", names[i].innerHTML);
+			links[i].setAttribute("href", table_path);
+		}
 	}
 
     function load_ipython_extension() {
