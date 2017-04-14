@@ -56,6 +56,10 @@ class FileDateHandler(IPythonHandler):
         format_date = time.strftime("%Y-%m-%d %H:%M %p", time.localtime(st_mtime))
         self.write(format_date)
 
+class ViewTableHandler(IPythonHandler):
+    def get(self, _filepath):
+        self.write()
+
 def load_jupyter_server_extension(nb_server_app):
     """
     Called when the extension is loaded.
