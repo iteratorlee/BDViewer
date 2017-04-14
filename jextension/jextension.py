@@ -53,7 +53,7 @@ class FileDateHandler(IPythonHandler):
             return
         statinfo = os.stat(file_path)
         st_mtime = statinfo.st_mtime
-        format_date = time.localtime(st_mtime)
+        format_date = time.strftime("%Y-%m-%d %H:%M %p", time.localtime(st_mtime))
         self.write(format_date)
 
 def load_jupyter_server_extension(nb_server_app):
