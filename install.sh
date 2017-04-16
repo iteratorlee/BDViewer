@@ -11,7 +11,6 @@ jupyter notebook --generate-config
 # Modify config file to install server extension
 echo "Copying configuration files"
 cp ./configs/jupyter_notebook_config_bak.py ~/.jupyter/jupyter_notebook_config.py
-cp ./configs/tree_bak.json ~/.jupyter/nbconfig/tree.json
 # Get static path of 'static' directory
 cd table_extension
 CURRENT_PATH=$(dirname $(readlink -f "$0"))
@@ -19,4 +18,4 @@ cd ..
 # Install and enable front-end extension
 echo "Installing and enabling extensions"
 jupyter nbextension install $CURRENT_PATH
-jupyter nbextension enable table_extension/main
+jupyter nbextension enable --section=tree table_extension/main
