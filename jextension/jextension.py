@@ -60,7 +60,8 @@ class ViewTableHandler(IPythonHandler):
             self.write("File does not exist")
             return
         beg_lines = utils.get_lines_skip_rows(file_path, 0, 1000)
-        self.write(beg_lines)
+        #self.write(beg_lines)
+        self.write(self.render_template('table/table.html'))
 
 def load_jupyter_server_extension(nb_server_app):
     """
