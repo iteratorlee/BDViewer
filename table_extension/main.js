@@ -22,8 +22,12 @@ define([
     var config = new Configmod.ConfigSection('tree', {base_url : base_url});
     config.loaded.then(function(){
     	add_file_meta();
+		bind_table_page();
     });
 
+	/**
+	 * Display file size and modified date on notebook tree page
+	 */
     function add_file_meta(){
         var row = $("div.list_item");
         var item = $("div.col-md-12");
@@ -41,7 +45,6 @@ define([
 		/**
 		 * Modify file size display
 		 */
-
         var filesize = new Array();
         var item_size = $(".item_size");
         
@@ -59,10 +62,8 @@ define([
 		/**
 		 * Modify file time display
 		 */
-		
 		var filetime = new Array();
 		var item_time = $(".item_modified");
-		alert(item_time.length);
 
 		for(var i = 0; i < path.length; ++i){
 			var request_url = utils.url_path_join(base_url, "filedate", path[i].innerHTML);
@@ -77,6 +78,20 @@ define([
 		}
 		
     }
+	
+	/**
+	 * When a file is a csv file, bind a table page to its open action.
+	 */
+	function bind_table_page(){
+		var links = $(".item_link");
+		var names = $(".item_name");
+
+		console.log(links.length + " " + names.length);
+		for(var i = 0; i < links.length; ++i){
+			var table_path = utils.url_path_join(base_url, "table_view", names[i].innerHTML);
+			links[i].setAttribute("href", table_path);
+		}
+	}
 
     function load_ipython_extension() {
         config.load();
