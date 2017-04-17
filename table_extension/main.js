@@ -88,8 +88,10 @@ define([
 
 		console.log(links.length + " " + names.length);
 		for(var i = 0; i < links.length; ++i){
-			var table_path = utils.url_path_join(base_url, "table_view", names[i].innerHTML);
-			links[i].setAttribute("href", table_path);
+            if(names[i].innerHTML.indexOf(".csv") > 0){
+			    var table_path = utils.url_path_join(base_url, "table_view", names[i].innerHTML);
+			    links[i].setAttribute("href", table_path);
+            }
 		}
 	}
 
