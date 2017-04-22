@@ -11,7 +11,8 @@ def get_lines_skip_rows(filename, beg, end):
     reader = pd.read_csv(filename, skiprows=beg, nrows=end-beg+1)
     data = reader.to_csv().split('\n')
     
-    print(len(data))
+
+    print("beg %d, end %d" % (beg, end))
     for i in range(len(data)):
         data[i] = data[i][data[i].find(',') + 1 : len(data[i])]
         data[i] = data[i] + '\n'
