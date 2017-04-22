@@ -21,7 +21,7 @@ require([
 
     console.log(filename);
 
-    var req_url = get_base_url(curr_url) + "file_content/" + filename + "/1/1000";
+    var req_url = get_base_url(curr_url) + "file_content/" + filename + "/0/999";
     $.get(req_url, function(data, status, datatype="text"){
         var container = document.getElementById("table_content");
         var temp_arr = data.split('\n');
