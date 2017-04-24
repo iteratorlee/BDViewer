@@ -21,7 +21,7 @@ require([
 
     console.log(filename);
 
-    var req_url = get_base_url(curr_url) + "file_content/" + filename + "/1/1000";
+    var req_url = get_base_url(curr_url) + "file_content/" + filename + "/0/999";
     $.get(req_url, function(data, status, datatype="text"){
         var container = document.getElementById("table_content");
         var temp_arr = data.split('\n');
@@ -50,7 +50,6 @@ require([
 
 
         Handsontable.hooks.add('afterScrollVertically', function(){
-            //auto loading need to be added
             var x = editor.table.rowOffset();
             console.log(x);
             if(x > editor.loadlines - 100){
@@ -59,7 +58,8 @@ require([
                 var _curr_url_arr = _curr_url.split('/');
                 var _filename = _curr_url_arr[_curr_url_arr.length-1];
                 
-                var dreq_url = get_base_url(document.URL) + "file_content/" + _filename + "/" + (editor.loadlines-100) + "/" + editor.loadlines;
+                var line_beg = parseInt($("#line_beg").val());
+                var dreq_url = get_base_url(document.URL) + "file_content/" + _filename + "/" + (editor.loadlines+line_beg-99) + "/" + (editor.loadlines+line_beg);
                 
                 $.get(dreq_url, function(_data, _status, datatype="text"){
                     var _temp_arr = _data.split('\n');
@@ -81,8 +81,7 @@ require([
 		$("#confirm_skip").click(function(){
 			console.log("confirm entered");
         	var starts = parseInt($("#line_beg").val());
-        	starts = starts > 500 ? starts - 500 : 0;
-        	var ends = starts + 1000;
+        	var ends = starts + 999;
         	var _curr_url = document.URL;
         	var _curr_url_arr = _curr_url.split('/')
         	var _filename = _curr_url_arr[_curr_url_arr.length-1];
