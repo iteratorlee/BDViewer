@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from tornado.web import HTTPError
+import matplotlib.pyplot as plt
 
 def get_lines_skip_rows(filename, beg, end):
     '''
@@ -51,3 +52,47 @@ def get_file_line_number(filename):
     with open(filename) as fp:
         return sum(1 for x in fp)
 
+def draw_line_chat(filename, r1, c1, r2, c2):
+    #test
+    if r1 == r2:
+		#do sth
+        print(r1, c1, r2, c2)
+        data_arr = pd.read_csv(filename, skiprows=r1, nrows=1)
+        data_arr = data_arr.as_matrix()
+        data_arr = data_arr[0, c1:c2]
+        print(data_arr)
+        datasize = len(data_arr)
+        x = range(datasize)
+
+        plt.title('Untitled')
+        plt.xlabel('index')
+        plt.ylabel('Row ' + str(r1))
+        plt.plot(x, data_arr, 'r', label='Untitled')
+        plt.xticks(x, x, rotation=0)
+
+        plt.legend(bbox_to_anchor=[0.3, 1])
+        plt.grid()
+        plt.show()
+    elif c1 == c2:
+        #do sth 
+        data_arr = pd.read_csv(filename, skiprows=r1, nrows=abs(r2-r1)+1)
+        data_arr = data_arr.as_matrix()
+        data_arr = data_arr[:, c1]
+        datasize = len(data_arr)
+        x = range(datasize)
+
+        plt.title('Untitled')
+        plt.xlabel('index')
+        plt.ylabel('Column ' + str(c1))
+        plt.plot(x, data_arr, 'r', label='Untitled')
+        plt.xticks(x, x, rotation=0)
+
+        plt.legend(bbox_to_anchor = [0.3, 1])
+        plt.grid()
+        plt.show()
+
+def draw_bar_chat(filename, r1, c1, r2, c2):
+    pass
+
+def draw_pie_chat(filename, r1, c1, r2, c2):
+    pass
