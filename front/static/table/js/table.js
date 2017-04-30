@@ -40,7 +40,14 @@ require([
             colHeaders: true,
             dropdownMenu: true,
             width: $(document).width(),
-            height: $(document).height()
+            height: $(document).height(),
+            afterSelection: function(r, c, r2, c2, preventScrolling){
+                $("#r1").val("" + r);
+                $("#c1").val("" + c);
+                $("#r2").val("" + r2);
+                $("#c2").val("" + c2);
+                preventScrolling.value = true;
+            }
         });
         
         var editor = new Object();
@@ -105,6 +112,21 @@ require([
 
         	$("#myModal").modal('hide');
     	});
+        
+        $(".chat_sort").click(function(){
+            console.log("sort entered");
+            var r1 = parseInt($("#r1").val());
+            var c1 = parseInt($("#c1").val());
+            var r2 = parseInt($("#r2").val());
+            var c2 = parseInt($("#c2").val());
 
+            if((c1 == c2) && (Math.abs(r1-r2) == 1000)){
+                //send a post request to server(sort by col)
+                //get the largest 1000 line
+                alert("Section you selected: " + r1 + " " + c1 + " " + r2 + " " + c2);
+            }
+            else
+                console.log("not a single column");
+        });
     });
 });
