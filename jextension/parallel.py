@@ -8,5 +8,10 @@ comm_rank = comm.Get_rank()
 comm_size = comm.Get_size()  
   
 def getColSum(filename, col=0):
-    
+    pass
+
+def getColAve(filename, col=0):
+    pass
+
+def getColLargest(filename, col=0):
     pass
