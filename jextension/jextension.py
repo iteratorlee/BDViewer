@@ -73,6 +73,28 @@ class FileContentHandler(IPythonHandler):
         lines = utils.get_lines_skip_rows(_filepath, beg, end)
         self.write(lines)
 
+class DrawChatHandler(IPythonHandler):
+    def get(self, _filepath, chat_type, r1, c1, r2, c2):
+        if not os.path.exists(_filepath):
+            self.write("File does not exist")
+            return
+        r1 = int(r1)
+        c1 = int(c1)
+        r2 = int(r2)
+        c2 = int(c2)
+
+        if int(chat_type) == 0:
+            #draw a line chat
+            utils.draw_line_chat(_filepath, r1, c1, r2, c2)
+        elif int(chat_type) == 1:
+            #draw a bar chat
+            utils.draw_bar_chat(_filepath, r1, c1, r2, c2)
+        elif int(chat_type) == 2:
+            #draw a pie chat
+            utils.draw_pie_chat(_filepath, r1, c1, r2, c2)
+        else:
+            self.write("No such kind of chat")
+
 def load_jupyter_server_extension(nb_server_app):
     """
     Called when the extension is loaded.
@@ -88,10 +110,12 @@ def load_jupyter_server_extension(nb_server_app):
     file_date_pattern = url_path_join(web_app.settings['base_url'], '/filedate/(.+$)')
     view_table_pattern = url_path_join(web_app.settings['base_url'], '/table_view/(.+$)')
     file_content_pattern = url_path_join(web_app.settings['base_url'], '/file_content/([^/]+)/([0-9]+)/([0-9]+$)')
+    draw_chat_pattern = url_path_join(web_app.settings['base_url'], '/draw_chat/([^/]+)/([0-2])/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+$)')
 
     web_app.add_handlers(host_pattern, [
                 (file_size_pattern, FileSizeHandler),
                 (file_date_pattern, FileDateHandler),
                 (view_table_pattern, ViewTableHandler),
-                (file_content_pattern, FileContentHandler)
-                ])
+                (file_content_pattern, FileContentHandler),
+                (draw_chat_pattern, DrawChatHandler)
+    ])

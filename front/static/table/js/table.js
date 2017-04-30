@@ -46,7 +46,7 @@ require([
                 $("#c1").val("" + c);
                 $("#r2").val("" + r2);
                 $("#c2").val("" + c2);
-                preventScrolling.value = true;
+                //preventScrolling.value = true;
             }
         });
         
@@ -124,9 +124,26 @@ require([
                 //send a post request to server(sort by col)
                 //get the largest 1000 line
                 alert("Section you selected: " + r1 + " " + c1 + " " + r2 + " " + c2);
-            }
-            else
-                console.log("not a single column");
+            }else
+                alert("not a single column");
+        });
+
+        $(".chat_line").click(function(){
+            console.log("line chat entered");
+            var r1 = parseInt($("#r1").val());
+            var c1 = parseInt($("#c1").val());
+            var r2 = parseInt($("#r2").val());
+            var c2 = parseInt($("#c2").val());
+            var _curr_url = document.URL;
+            var _curr_url_arr = _curr_url.split('/')
+            var _filename = _curr_url_arr[_curr_url_arr.length-1];
+            var chat_req_url = get_base_url(document.URL) + "draw_chat/" + _filename + "/0/" + r1 + "/" + c1 + "/" + r2 + "/" + c2;
+            
+            if(c1 > -1 && c2 > -1 && r1 > -1 && r2 > -1 && ((c1 == c2) || (r1 == r2))){
+                $.get(chat_req_url, function(_data, _status, datatype="text"){});
+                console.log("get draw_chat finish");
+            }else
+                alert("not a single column or a single row " + r1 + " " + c1 + " " + r2 + " " + c2);
         });
     });
 });
