@@ -95,6 +95,16 @@ class DrawChatHandler(IPythonHandler):
         else:
             self.write("No such kind of chat")
 
+class SortContentHandler(IPythonHandler):
+    def get(self, _filepath, col):
+        if not os.path.exists(_filepath):
+            self.write("File does not exist")
+            return
+        col = int(col)
+        
+        lines = utils.get_lines_after_sort(_filepath, col)
+        self.write(lines)
+
 def load_jupyter_server_extension(nb_server_app):
     """
     Called when the extension is loaded.
@@ -111,11 +121,12 @@ def load_jupyter_server_extension(nb_server_app):
     view_table_pattern = url_path_join(web_app.settings['base_url'], '/table_view/(.+$)')
     file_content_pattern = url_path_join(web_app.settings['base_url'], '/file_content/([^/]+)/([0-9]+)/([0-9]+$)')
     draw_chat_pattern = url_path_join(web_app.settings['base_url'], '/draw_chat/([^/]+)/([0-2])/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+$)')
-
+    sort_content_pattern = url_path_join(web_app.settings['base_url'], '/sort_content/([^/]+)/([0-9]+$)')
     web_app.add_handlers(host_pattern, [
                 (file_size_pattern, FileSizeHandler),
                 (file_date_pattern, FileDateHandler),
                 (view_table_pattern, ViewTableHandler),
                 (file_content_pattern, FileContentHandler),
-                (draw_chat_pattern, DrawChatHandler)
+                (draw_chat_pattern, DrawChatHandler),
+                (sort_content_pattern, SortContentHandler)
     ])
