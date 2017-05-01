@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from tornado.web import HTTPError
 import matplotlib.pyplot as plt
+from parallel import *
 
 def get_lines_skip_rows(filename, beg, end):
     '''
@@ -32,6 +33,21 @@ def get_lines_skip_rows(filename, beg, end):
         )
     return ""
 
+def get_lines_after_sort(filename, col):
+    lines = sort_by_col(filename, col)
+    try:
+        bcontent = ''
+        for line in lines:
+            bcontent = bcontent + line + '\n'
+        return bcontent
+    except UnicodeError:
+        raise HTTPError(
+            400,
+            "%s is not UTF-8 encoded" % filename,
+            reason='bad format'
+        )
+    return ''
+
 def get_file_line_number_rough(filename):
     '''
     Get line number of a file roughly,
@@ -53,9 +69,7 @@ def get_file_line_number(filename):
         return sum(1 for x in fp)
 
 def draw_line_chat(filename, r1, c1, r2, c2):
-    #test
     if r1 == r2:
-		#do sth
         print(r1, c1, r2, c2)
         data_arr = pd.read_csv(filename, skiprows=r1, nrows=1)
         data_arr = data_arr.as_matrix()
@@ -74,7 +88,6 @@ def draw_line_chat(filename, r1, c1, r2, c2):
         plt.grid()
         plt.show()
     elif c1 == c2:
-        #do sth 
         data_arr = pd.read_csv(filename, skiprows=r1, nrows=abs(r2-r1)+1)
         data_arr = data_arr.as_matrix()
         data_arr = data_arr[:, c1]

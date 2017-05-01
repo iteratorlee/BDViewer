@@ -1,17 +1,22 @@
-from utils import *
-import mpi4py.MPI as MPI  
-import numpy as np
-import sys
+from pyspark import SparkConf, SparkContext
+import os
 
-comm = MPI.COMM_WORLD  
-comm_rank = comm.Get_rank()  
-comm_size = comm.Get_size()  
-  
-def getColSum(filename, col=0):
-    pass
+APP_NAME = "Notebook Extension"
+conf = SparkConf().setAppName(APP_NAME)
+conf = conf.setMaster("local[*]")
+sc = SparkContext(conf=conf)
 
-def getColAve(filename, col=0):
-    pass
+def sort_by_col(filename, col):
+    if not os.path.exists(filename):
+        print("File not exist")
+        return
+    lines = sc.textFile(filename).flatMap(lambda x : x.split('\n'))
+    lines = lines.map(lambda x : (float(x.split(',')[col]), x))
+    lines = lines.sortByKey().map(lambda (x, y) : y).collect()
+    lines = lines[0:1000]
+    #for i in range(len(lines)):
+        #lines[i] = lines[i].split(',')
+        #for j in range(len(lines[i])):
+            #lines[i][j] = float(lines[i][j])
 
-def getColLargest(filename, col=0):
-    pass
+    return lines

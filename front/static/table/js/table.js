@@ -119,11 +119,29 @@ require([
             var c1 = parseInt($("#c1").val());
             var r2 = parseInt($("#r2").val());
             var c2 = parseInt($("#c2").val());
+            var _curr_url = document.URL;
+            var _curr_url_arr = _curr_url.split('/')
+            var _filename = _curr_url_arr[_curr_url_arr.length-1];
 
             if((c1 == c2) && (Math.abs(r1-r2) == 1000)){
                 //send a post request to server(sort by col)
                 //get the largest 1000 line
-                alert("Section you selected: " + r1 + " " + c1 + " " + r2 + " " + c2);
+                //alert("Section you selected: " + r1 + " " + c1 + " " + r2 + " " + c2);
+                var sreq_url = get_base_url(document.URL) + "sort_content/" + _filename + "/" + c1;
+                $.get(sreq_url, function(_data, _status, datatype="text"){
+                    var _temp_arr = _data.split('\n');
+                    var _table_data = new Array();
+
+                    for(var i = 0; i < _temp_arr.length; ++i){
+                        if(_temp_arr[i] != "")
+                            _table_data[i] = _temp_arr[i].split(',');
+                    }
+                    editor.table.loadData(_table_data);
+                    editor.tabledata = _table_data;
+                    editor.table.save_enabled = true;
+                    editor.loadlines = 1000;
+                    $("#line_beg").val("0");
+                });
             }else
                 alert("not a single column");
         });
