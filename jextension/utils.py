@@ -4,17 +4,50 @@ from tornado.web import HTTPError
 import matplotlib.pyplot as plt
 from parallel import *
 
+def get_tail_lines(filename):
+    fd = open(filename)
+    cnt = 0
+    pos = 0
+    while True:
+        pos -= 1
+        try:
+            fd.seek(pos, 2)
+            if fd.read(1) == '\n':
+                cnt += 1
+            if cnt == 1000:
+                fd.seek(pos, 2)
+                data = fd.readlines()
+                content = ''
+                for i in range(len(data)):
+                    if data[i] == '' or data[i] == '\n':
+                        continue
+                    data[i] = data[i].strip()
+                    content += (data[i] + '\n')
+                return content
+        except:
+            fd.seek(0, 0)
+            data = fd.readlines()
+            content = ''
+            for i in range(len(data)):
+                data[i] = data[i].strip()
+                content += (data[i] + '\n')
+            return content
+
 def get_lines_skip_rows(filename, beg, end):
     '''
     Get lines from line NO.beg to line NO.end
 
     '''
     print("getting lines")
+    print("beg %d, end %d" % (beg, end))
+    if beg < 0 or end < 0:
+        data = get_tail_lines(filename)
+        return data
+
     reader = pd.read_csv(filename, skiprows=beg, nrows=end-beg+1)
     data = reader.to_csv().split('\n')
     
 
-    print("beg %d, end %d" % (beg, end))
     for i in range(len(data)):
         data[i] = data[i][data[i].find(',') + 1 : len(data[i])]
         data[i] = data[i] + '\n'
@@ -74,7 +107,6 @@ def draw_line_chat(filename, r1, c1, r2, c2):
         data_arr = pd.read_csv(filename, skiprows=r1, nrows=1)
         data_arr = data_arr.as_matrix()
         data_arr = data_arr[0, c1:c2]
-        print(data_arr)
         datasize = len(data_arr)
         x = range(datasize)
 
@@ -105,6 +137,7 @@ def draw_line_chat(filename, r1, c1, r2, c2):
         plt.show()
 
 def draw_bar_chat(filename, r1, c1, r2, c2):
+    
     pass
 
 def draw_pie_chat(filename, r1, c1, r2, c2):

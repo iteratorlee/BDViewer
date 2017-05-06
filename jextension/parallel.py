@@ -14,9 +14,5 @@ def sort_by_col(filename, col):
     lines = lines.map(lambda x : (float(x.split(',')[col]), x))
     lines = lines.sortByKey().map(lambda (x, y) : y).collect()
     lines = lines[0:1000]
-    #for i in range(len(lines)):
-        #lines[i] = lines[i].split(',')
-        #for j in range(len(lines[i])):
-            #lines[i][j] = float(lines[i][j])
 
     return lines
