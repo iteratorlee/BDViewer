@@ -59,8 +59,6 @@ class ViewTableHandler(IPythonHandler):
         if not os.path.exists(file_path):
             self.write("File does not exist")
             return
-        #beg_lines = utils.get_lines_skip_rows(file_path, 0, 1000)
-        #self.write(beg_lines)
         self.write(self.render_template('table/table.html'))
 
 class FileContentHandler(IPythonHandler):
@@ -119,7 +117,7 @@ def load_jupyter_server_extension(nb_server_app):
     file_size_pattern = url_path_join(web_app.settings['base_url'], '/filesize/(.+$)')
     file_date_pattern = url_path_join(web_app.settings['base_url'], '/filedate/(.+$)')
     view_table_pattern = url_path_join(web_app.settings['base_url'], '/table_view/(.+$)')
-    file_content_pattern = url_path_join(web_app.settings['base_url'], '/file_content/([^/]+)/([0-9]+)/([0-9]+$)')
+    file_content_pattern = url_path_join(web_app.settings['base_url'], '/file_content/([^/]+)/(-?[0-9]+)/(-?[0-9]+$)')
     draw_chat_pattern = url_path_join(web_app.settings['base_url'], '/draw_chat/([^/]+)/([0-2])/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+$)')
     sort_content_pattern = url_path_join(web_app.settings['base_url'], '/sort_content/([^/]+)/([0-9]+$)')
     web_app.add_handlers(host_pattern, [

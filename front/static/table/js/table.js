@@ -57,31 +57,33 @@ require([
 
 
         Handsontable.hooks.add('afterScrollVertically', function(){
-            var x = editor.table.rowOffset();
-            console.log(x);
-            if(x > editor.loadlines - 100){
-                editor.loadlines += 100;
-                var _curr_url = document.URL;
-                var _curr_url_arr = _curr_url.split('/');
-                var _filename = _curr_url_arr[_curr_url_arr.length-1];
+            if(parseInt($("#line_beg").val()) >= 0){
+                var x = editor.table.rowOffset();
+                console.log(x);
+                if(x > editor.loadlines - 100){
+                    editor.loadlines += 100;
+                    var _curr_url = document.URL;
+                    var _curr_url_arr = _curr_url.split('/');
+                    var _filename = _curr_url_arr[_curr_url_arr.length-1];
                 
-                var line_beg = parseInt($("#line_beg").val());
-                var dreq_url = get_base_url(document.URL) + "file_content/" + _filename + "/" + (editor.loadlines+line_beg-99) + "/" + (editor.loadlines+line_beg);
+                    var line_beg = parseInt($("#line_beg").val());
+                    var dreq_url = get_base_url(document.URL) + "file_content/" + _filename + "/" + (editor.loadlines+line_beg-99) + "/" + (editor.loadlines+line_beg);
                 
-                $.get(dreq_url, function(_data, _status, datatype="text"){
-                    var _temp_arr = _data.split('\n');
-                    var _table_data = new Array();
+                    $.get(dreq_url, function(_data, _status, datatype="text"){
+                        var _temp_arr = _data.split('\n');
+                        var _table_data = new Array();
 
-                    for(var i = 0; i < _temp_arr.length; ++i){
-                        if(_temp_arr[i] != "")
-                            _table_data[i] = _temp_arr[i].split(',');
-                    }
+                        for(var i = 0; i < _temp_arr.length; ++i){
+                            if(_temp_arr[i] != "")
+                                _table_data[i] = _temp_arr[i].split(',');
+                        }
                     
-                    _table_data = editor.tabledata.concat(_table_data);
-                    editor.table.loadData(_table_data);
-                    editor.tabledata = _table_data;
-                    editor.table.save_enabled = true;
-                });
+                        _table_data = editor.tabledata.concat(_table_data);
+                        editor.table.loadData(_table_data);
+                        editor.tabledata = _table_data;
+                        editor.table.save_enabled = true;
+                    });
+                }
             }
         }, table);
 
@@ -89,14 +91,20 @@ require([
 			console.log("confirm entered");
         	var starts = parseInt($("#line_beg").val());
         	var ends = starts + 999;
+			editor.loadlines = ends - starts + 1;
+            if(starts < 0){
+                starts = -1;
+                ends = -1;
+                $("#line_beg").val("-999");
+            }
         	var _curr_url = document.URL;
         	var _curr_url_arr = _curr_url.split('/')
         	var _filename = _curr_url_arr[_curr_url_arr.length-1];
-			editor.loadlines = ends - starts + 1;
 
             var dreq_url = get_base_url(document.URL) + "file_content/" + _filename + "/" + starts + "/" + ends;
            	
 			$.get(dreq_url, function(_data, _status, datatype="text"){
+                console.log(_data);
                 var _temp_arr = _data.split('\n');
                 var _table_data = new Array();
 
