@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import os
 from tornado.web import HTTPError
 import matplotlib.pyplot as plt
@@ -100,6 +101,38 @@ def get_file_line_number(filename):
     '''
     with open(filename) as fp:
         return sum(1 for x in fp)
+
+def get_row_sum(filename, row):
+    data_arr = pd.read_csv(filename, skiprows=row, nrows=1)
+    return np.sum(data_arr.as_matrix())
+
+def get_row_ave(filename, row):
+    data_arr = pd.read_csv(filename, skiprows=row, nrows=1)
+    return np.mean(data_arr.as_matrix())
+    
+
+def get_data_feature(filename, feature_type, dim, index):
+    '''
+    Get the summision or average value of a column or a row
+    '''
+    if dim == 0:
+        #column
+        if feature_type == 0:
+            ret = get_col_sum(filename, index)
+        elif feature_type == 1:
+            ret = get_col_ave(filename, index)
+        else:
+            ret = -1
+    elif dim == 1:
+        #row
+        if feature_type == 0:
+            ret = get_row_sum(filename, index)
+        elif feature_type == 1:
+            ret = get_row_ave(filename, index)
+        else:
+            ret = -2
+
+    return ret
 
 def draw_line_chat(filename, r1, c1, r2, c2):
     if r1 == r2:

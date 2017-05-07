@@ -103,6 +103,19 @@ class SortContentHandler(IPythonHandler):
         lines = utils.get_lines_after_sort(_filepath, col)
         self.write(lines)
 
+class DataFeatureHandler(IPythonHandler):
+    def get(self, _filepath, feature, dim, index):
+        if not os.path.exists(_filepath):
+            self.write("File does not exist")
+            return
+        feature = int(feature)
+        dim = int(dim)
+        index = int(index)
+
+        ret = str(utils.get_data_feature(_filepath, feature, dim, index))
+        print(ret)
+        self.write(ret)
+
 def load_jupyter_server_extension(nb_server_app):
     """
     Called when the extension is loaded.
@@ -120,11 +133,13 @@ def load_jupyter_server_extension(nb_server_app):
     file_content_pattern = url_path_join(web_app.settings['base_url'], '/file_content/([^/]+)/(-?[0-9]+)/(-?[0-9]+$)')
     draw_chat_pattern = url_path_join(web_app.settings['base_url'], '/draw_chat/([^/]+)/([0-2])/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+$)')
     sort_content_pattern = url_path_join(web_app.settings['base_url'], '/sort_content/([^/]+)/([0-9]+$)')
+    data_feature_pattern = url_path_join(web_app.settings['base_url'], '/data_feature/([^/]+)/([0-9])/([0-1])/([0-9]+$)')
     web_app.add_handlers(host_pattern, [
                 (file_size_pattern, FileSizeHandler),
                 (file_date_pattern, FileDateHandler),
                 (view_table_pattern, ViewTableHandler),
                 (file_content_pattern, FileContentHandler),
                 (draw_chat_pattern, DrawChatHandler),
-                (sort_content_pattern, SortContentHandler)
+                (sort_content_pattern, SortContentHandler),
+                (data_feature_pattern, DataFeatureHandler)
     ])
