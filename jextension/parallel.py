@@ -16,3 +16,26 @@ def sort_by_col(filename, col):
     lines = lines[0:1000]
 
     return lines
+
+def get_col_sum(filename, col):
+    if not os.path.exists(filename):
+        print("File not exist")
+        return
+
+    lines = sc.textFile(filename).flatMap(lambda x : x.split('\n'))
+    lines = lines.map(lambda x : float(x.split(',')[col]))
+    ret = lines.reduce(lambda x, y : x + y)
+
+    return ret
+
+def get_col_ave(filename, col):
+    if not os.path.exists(filename):
+        print("File not exist")
+        return
+
+    lines = sc.textFile(filename).flatMap(lambda x : x.split('\n'))
+    lines = lines.map(lambda x : float(x.split(',')[col]))
+    ret = lines.reduce(lambda x, y : x + y)
+    line_num = lines.count()
+
+    return ret / float(line_num)
