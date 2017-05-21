@@ -195,7 +195,7 @@ require([
                             sum_req_url += ("/0/" + c1);
                             $.get(sum_req_url, function(_data, _status, datatype="text"){
                                 _table_data = editor.tabledata;
-                                _table_data[_table_data.length - 1][c1] = _data;
+                                _table_data[0][c1] = _data;
                                 editor.tabledata = _table_data;
                                 editor.table.loadData(_table_data);
                             });
@@ -205,7 +205,7 @@ require([
                         if(featured % 3 != 0) {
                             featured *= 3;
                             $("#featured").val(featured + "");
-                            sum_req_url += ("/1/" + (r1 - 1));
+                            sum_req_url += ("/1/" + r1);
                             $.get(sum_req_url, function(_data, _status, datatype="text"){
                                 _table_data = editor.tabledata;
                                 for(var i = 0; i < _table_data.length; ++i){
@@ -221,7 +221,7 @@ require([
                                 console.log(_table_data);
                             });
                         }else{
-                            sum_req_url += ("/1/" + (r1 - 1));
+                            sum_req_url += ("/1/" + r1);
                             $.get(sum_req_url, function(_data, _status, datatype="text"){
                                 _table_data = editor.tabledata;
                                 _table_data[r1][_table_data[r1].length-1] = _data;
@@ -241,50 +241,75 @@ require([
             var c1 = parseInt($("#c1").val());
             var r2 = parseInt($("#r2").val());
             var c2 = parseInt($("#c2").val());
-            var _curr_url = document.URL;
+            var featured = parseInt($("#featured").val());
+			var _curr_url = document.URL;
             var _curr_url_arr = _curr_url.split('/')
             var _filename = _curr_url_arr[_curr_url_arr.length-1];
             // /data_feature/filename/feature/dim/index
-            var sum_req_url = get_base_url(document.URL) + "data_feature/" + _filename + "/1";
+            var ave_req_url = get_base_url(document.URL) + "data_feature/" + _filename + "/1";
 
             if(c1 > -1 && c2 > -1 && r1 > -1 && r2 > -1){
                 if(c1 == c2 || r1 == r2){
                     if(c1 == c2){
                         //dim = 0, feature = 0
-                        sum_req_url += ("/0/" + c1);
-                        $.get(sum_req_url, function(_data, _status, datatype="text"){
-                            _table_data = editor.tabledata;
-                            var last_line = [] 
-                            for(var i = 0; i < _table_data[0].length; ++i){
-                                if(i == c1)
-                                    last_line[i] = _data;
-                                else
-                                    last_line[i] = " ";
-                            }
-                            console.log(last_line);
-                            
-                            _table_data = [last_line].concat(_table_data);
-                            editor.tabledata = _table_data;
-                            editor.table.loadData(_table_data);
-                            console.log(_table_data);
-                        });
+                        if(featured % 2 != 0) {
+                            featured *= 2;
+                            $("#featured").val(featured + "");
+                            ave_req_url += ("/0/" + c1);
+                            $.get(ave_req_url, function(_data, _status, datatype="text"){
+                                _table_data = editor.tabledata;
+                                var last_line = []
+                                for(var i = 0; i < _table_data[0].length; ++i){
+                                    if(i == c1)
+                                        last_line[i] = _data;
+                                    else
+                                        last_line[i] = " ";
+                                }
+                                console.log(last_line);
+
+                                _table_data = [last_line].concat(_table_data);
+                                editor.tabledata = _table_data;
+                                editor.table.loadData(_table_data);
+                                console.log(_table_data);
+                            });
+                        }else{
+                            ave_req_url += ("/0/" + c1);
+                            $.get(ave_req_url, function(_data, _status, datatype="text"){
+                                _table_data = editor.tabledata;
+                                _table_data[0][c1] = _data;
+                                editor.tabledata = _table_data;
+                                editor.table.loadData(_table_data);
+                            });
+                        }
                     }else if(r1 == r2){
                         //dim = 1, feature = 0
-                        sum_req_url += ("/1/" + r1);
-                        $.get(sum_req_url, function(_data, _status, datatype="text"){
-                            _table_data = editor.tabledata;
-                            for(var i = 0; i < _table_data.length; ++i){
-                                tmp_arr = _table_data[i];
-                                if(i == r1) 
-                                    tmp_arr = tmp_arr.concat(_data);
-                                else 
-                                    tmp_arr = tmp_arr.concat(" ");
-                                _table_data[i] = tmp_arr;
-                            }
-                            editor.tabledata = _table_data;
-                            editor.table.loadData(_table_data);
-                            console.log(_table_data);
-                        });
+                        if(featured % 3 != 0) {
+                            featured *= 3;
+                            $("#featured").val(featured + "");
+                            ave_req_url += ("/1/" + r1);
+                            $.get(ave_req_url, function(_data, _status, datatype="text"){
+                                _table_data = editor.tabledata;
+                                for(var i = 0; i < _table_data.length; ++i){
+                                    tmp_arr = _table_data[i];
+                                    if(i == r1)
+                                        tmp_arr = tmp_arr.concat(_data);
+                                    else 
+                                        tmp_arr = tmp_arr.concat(" ");
+                                    _table_data[i] = tmp_arr;
+                                }
+                                editor.tabledata = _table_data;
+                                editor.table.loadData(_table_data);
+                                console.log(_table_data);
+                            });
+                        }else{
+                            ave_req_url += ("/1/" + r1);
+                            $.get(ave_req_url, function(_data, _status, datatype="text"){
+                                _table_data = editor.tabledata;
+                                _table_data[r1][_table_data[r1].length-1] = _data;
+                                editor.tabledata = _table_data;
+                                editor.table.loadData(_table_data);
+                            });
+                        }
                     }
                 }
             }else
@@ -317,4 +342,4 @@ require([
             console.log("pie chat entered");
         });
     });
-});
+})
