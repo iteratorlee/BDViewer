@@ -1,9 +1,20 @@
 import pandas as pd
 import numpy as np
 import os
+import sys
 from tornado.web import HTTPError
 import matplotlib.pyplot as plt
 from parallel import *
+from ctypes import *
+
+def get_line_num_py(filename):
+    with open(filename) as fd:
+        line_num = sum(1 for i in fd)
+        return line_num
+
+def get_line_num(filename):
+    app = cdll.LoadLibrary(os.path.dirname(os.path.realpath(__file__)) + '/count_line.so')
+    return app.get_line_number(filename)
 
 def get_tail_lines(filename):
     fd = open(filename)

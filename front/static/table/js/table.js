@@ -49,6 +49,18 @@ require([
                 //preventScrolling.value = true;
             }
         });
+
+        //get line number
+        var _tmp_url = document.URL;
+        var _tmp_url_arr = _tmp_url.split('/')
+        var _tmp_name = _tmp_url_arr[_tmp_url_arr.length-1];
+        var lnreq_url = get_base_url(_tmp_url) + "line_num/" + _tmp_name;
+        console.log(lnreq_url);
+        $.get(lnreq_url, function(_data, _status, datatype="text"){
+            //display line_num on the page
+            console.log(_data);
+            document.getElementById("line_num").innerHTML = _data + " lines totally";
+        });
         
         var editor = new Object();
         editor.table = table;
