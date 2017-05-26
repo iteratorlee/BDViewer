@@ -118,10 +118,11 @@ class DataFeatureHandler(IPythonHandler):
 
 class FileLineNumberHandler(IPythonHandler):
     def get(self, _filepath):
+        _filepath = str(_filepath)
         if not os.path.exists(_filepath):
             self.write("File does not exist")
             return
-        line_num = str(utils.get_line_num_py(_filepath))
+        line_num = str(utils.get_line_num(_filepath))
         print("file %s with %s lines" % (_filepath, line_num))
         self.write(line_num)
 
