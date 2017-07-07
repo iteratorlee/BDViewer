@@ -3,34 +3,7 @@ from notebook.base.handlers import IPythonHandler
 import os
 import time
 import utils
-
-def formatSize(_bytes):
-    '''
-    return file size (an integer)
-    '''
-    try:
-        _bytes = float(_bytes)
-        kb = _bytes / 1024
-    except:
-        print("Bad format")
-        return "Error"
-
-    if kb >= 1024:
-        M = kb / 1024
-        if M >= 1024:
-            G = M / 1024
-            G = int(G)
-            return "%dG" % (G)
-        else:
-            M = int(M)
-            return "%dM" % (M)
-    else:
-        if kb >= 1:
-            kb = int(kb)
-            return "%dK" % (kb)
-        else:
-            _bytes = int(_bytes)
-            return "%dB" % _bytes
+from utils import formatSize
 
 class FileSizeHandler(IPythonHandler):
     def get(self, _filepath):
