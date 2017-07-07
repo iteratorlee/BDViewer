@@ -7,6 +7,34 @@ import matplotlib.pyplot as plt
 from parallel import *
 from ctypes import *
 
+def formatSize(_bytes):
+    '''
+    return file size (an integer)
+    '''
+    try:
+        _bytes = float(_bytes)
+        kb = _bytes / 1024
+    except:
+        print("Bad format")
+        return "Error"
+
+    if kb >= 1024:
+        M = kb / 1024
+        if M >= 1024:
+            G = M / 1024
+            G = int(G)
+            return "%dG" % (G)
+        else:
+            M = int(M)
+            return "%dM" % (M)
+    else:
+        if kb >= 1:
+            kb = int(kb)
+            return "%dK" % (kb)
+        else:
+            _bytes = int(_bytes)
+            return "%dB" % _bytes
+
 def get_line_num_py(filename):
     with open(filename) as fd:
         line_num = sum(1 for i in fd)
