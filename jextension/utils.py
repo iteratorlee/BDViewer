@@ -173,6 +173,10 @@ def get_data_feature(filename, feature_type, dim, index):
 
     return ret
 
+def cal_freq(filename, col):
+    freq = cal_freq_parallel(filename, col)
+    return dict(freq)
+
 def draw_line_chat(filename, r1, c1, r2, c2):
     if r1 == r2:
         print(r1, c1, r2, c2)

@@ -353,5 +353,33 @@ require([
         $(".chat_pie").click(function(){
             console.log("pie chat entered");
         });
+
+        $(".chat_feature").click(function(){
+			var r1 = parseInt($("#r1").val());
+            var c1 = parseInt($("#c1").val());
+            var r2 = parseInt($("#r2").val());
+            var c2 = parseInt($("#c2").val());
+            var _curr_url = document.URL;
+            var _curr_url_arr = _curr_url.split('/')
+            var _filename = _curr_url_arr[_curr_url_arr.length-1];
+
+            if((c1 == c2) && (Math.abs(r1-r2) == 1000)){
+                var freq_url = get_base_url(document.URL) + "file_feature/" + _filename + "/" + c1; 
+                $.get(freq_url, function(_data, _status, datatype="json"){
+                    //draw heatmap
+                    var json_data = eval('(' + _data + ')');
+                    var freq_arr = [];
+                    for(var i = 0; i < 100; ++i){
+                        var temp_key = i + "";
+                        var temp_val = json_data[temp_key];
+                        if(temp_val == undefined) temp_val = 0;
+                        else temp_val = parseInt(temp_val);
+                        freq_arr[i] = temp_val;
+                    } 
+                    //console.log(freq_arr);
+                });
+            }else
+                alert("Please select a whole column by clicking its top");
+        });
     });
 })
