@@ -28,8 +28,8 @@
 	Sum&nbsp<i class="fa-sum"></i></button></span>
     <span class="chat_ave"><button type="button" class="btn btn-info btn-sm">
     Ave&nbsp<i class="fa fa-bars"></i></button></span>
-    <span class="chat_feature"><button type="button" class="btn btn-warning btn-sm">
-    Heatmap&nbsp<i class="fa fa-bars"></i></button></span>
+    <span class="chat_feature"><button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#heatmap">
+    Heatmap&nbsp<i class="fa fa-map"></i></button></span>
 	<span class="dropdown">
     	<button type="button" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">Plot
         	<span class="caret"></span>
@@ -78,6 +78,29 @@
          </div>
       </div><!-- /.modal-content -->
       </div><!-- /.modal -->
+</div>
+
+<div class="modal fade" id="heatmap" tabindex="-1" role="dialog" aria-labelledby="heatmapLabel" aria-hidden="true">
+      <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close"
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="heatmapLabel">
+               Heat map
+            </h4>
+         </div>
+         <div class="modal-body" id="heatmap_body" style="height:100;width:600">
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default"
+               data-dismiss="modal">Close
+            </button>
+         </div>
+      </div>
+      </div>
 </div>
 
 <div id="table_content">

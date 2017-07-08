@@ -1,8 +1,9 @@
 require([
     "jquery",
     "handsontable.full",
-	"bootstrap.min"
-], function($, handson, bs){
+	"bootstrap.min",
+    "heatmap"
+], function($, handson, bs, hm){
     
     var get_base_url = function(url){
         var temp_array = url.split('/');
@@ -375,7 +376,35 @@ require([
                         if(temp_val == undefined) temp_val = 0;
                         else temp_val = parseInt(temp_val);
                         freq_arr[i] = temp_val;
-                    } 
+                    }
+
+                    var heatmapInstance = hm.create({
+                        container : document.querySelector("#heatmap_body"),
+                    });
+
+                    var points = []
+                    var max_val = 0;
+                    var width = 600;
+                    var height = 100;
+                    var len = 100;
+                    
+                    for(var i = 0; i < len; ++i){
+                        var val = freq_arr[i];
+                        max_val = Math.max(val, max_val);
+                        var point = {
+                            x : i*6,
+                            y : 50,
+                            value : val
+                        };
+                        points.push(point);
+                    }
+                    
+                    var data = {
+                        max : max_val,
+                        data : points
+                    };
+                    heatmapInstance.setData(data);
+
                     //console.log(freq_arr);
                 });
             }else
