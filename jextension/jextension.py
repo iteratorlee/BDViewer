@@ -1,5 +1,6 @@
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
+import tornado.escape
 import os
 import time
 import utils
@@ -99,6 +100,18 @@ class FileLineNumberHandler(IPythonHandler):
         print("file %s with %s lines" % (_filepath, line_num))
         self.write(line_num)
 
+class FileFeatureHandler(IPythonHandler):
+    def get(self, _filepath, col):
+        _filepath = str(_filepath)
+        col = int(col)
+        if not os.path.exists(_filepath):
+            self.write("File does not exist")
+            return
+        ret = utils.cal_freq(_filepath, col)
+        print("file %s request for global feature of column %s" % (_filepath, str(col)))
+        ret_json = tornado.escape.json_encode(ret)
+        self.write(ret_json)
+
 def load_jupyter_server_extension(nb_server_app):
     """
     Called when the extension is loaded.
@@ -118,6 +131,7 @@ def load_jupyter_server_extension(nb_server_app):
     sort_content_pattern = url_path_join(web_app.settings['base_url'], '/sort_content/([^/]+)/([0-9]+$)')
     data_feature_pattern = url_path_join(web_app.settings['base_url'], '/data_feature/([^/]+)/([0-9])/([0-1])/([0-9]+$)')
     line_number_pattern = url_path_join(web_app.settings['base_url'], '/line_num/(.+$)')
+    file_feature_pattern = url_path_join(web_app.settings['base_url'], '/file_feature/([^/]+)/([0-9]+$)')
     web_app.add_handlers(host_pattern, [
                 (file_size_pattern, FileSizeHandler),
                 (file_date_pattern, FileDateHandler),
@@ -126,5 +140,6 @@ def load_jupyter_server_extension(nb_server_app):
                 (draw_chat_pattern, DrawChatHandler),
                 (sort_content_pattern, SortContentHandler),
                 (data_feature_pattern, DataFeatureHandler),
-                (line_number_pattern, FileLineNumberHandler)
+                (line_number_pattern, FileLineNumberHandler),
+                (file_feature_pattern, FileFeatureHandler)
     ])
