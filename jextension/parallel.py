@@ -40,6 +40,12 @@ def get_col_ave(filename, col):
 
     return ret / float(line_num)
 
+def cal_index(x, col_min, section_size):
+    if section_size == 0:
+        return 50
+    else:
+        return int((x - col_min) / section_size)
+
 def cal_freq_parallel(filename, col):
     if not os.path.exists(filename):
         print("File not exist")
@@ -55,7 +61,7 @@ def cal_freq_parallel(filename, col):
     inter_cnt = 100
     section_size = inter_size / inter_cnt
     
-    lines = lines.map(lambda x : int((x - col_min) / section_size))
+    lines = lines.map(lambda x : cal_index(x, col_min, section_size))
     freq = lines.countByValue()
 
     return freq
