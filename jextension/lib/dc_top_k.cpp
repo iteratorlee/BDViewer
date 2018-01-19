@@ -8,7 +8,7 @@ using namespace std;
 
 #define MAXLEN 8192
 #define MASTER 0
-//#define DEBUG
+#define DEBUG
 
 /**
  * Get line number of a file
@@ -154,10 +154,6 @@ int main(int argc, char **argv){
 		n = get_line_number(filename);
 		group_size = n / k;
 		get_offsets(filename, &offsets, n, k);
-	#ifdef DEBUG
-		print_offsets(offsets, k);
-		exit(-1);
-	#endif
 	}
 	MPI_Bcast(&n, 1, MPI_INT, MASTER, MPI_COMM_WORLD);
 	MPI_Bcast(&group_size, 1, MPI_INT, MASTER, MPI_COMM_WORLD);
@@ -178,22 +174,30 @@ int main(int argc, char **argv){
 	}
 	MPI_Reduce(&local_min, &global_min, 1, MPI_FLOAT, MPI_MIN, 0, MPI_COMM_WORLD);
 	MPI_Bcast(&global_min, 1, MPI_FLOAT, MASTER, MPI_COMM_WORLD);
-	if(myrank == MASTER) printf("rank[MASTER] global min: %f\n", global_min);
+#ifdef DEBUG
+    if(myrank == MASTER) printf("rank[MASTER] global min: %f\n", global_min);
+#endif
 
 	//get elements larger than global minimum element
 	float *node_eles = (float *)&(local_eles[0]);
 	int node_cnt = 0; //number of elements that larger than global minmum element
-	printf("rank[%d] local_k: %d, group_size: %d, production: %d\n", myrank, local_k, group_size, local_k * group_size);
-	for(i = 0; i < local_k * group_size; ++i){
+#ifdef DEBUG
+    printf("rank[%d] local_k: %d, group_size: %d, production: %d\n", myrank, local_k, group_size, local_k * group_size);
+#endif
+    for(i = 0; i < local_k * group_size; ++i){
 		if(node_eles[i] >= global_min) 
 			node_eles[node_cnt++] = node_eles[i];
 	}
+#ifdef DEBUG
 	printf("rank[%d] node_cnt: %d\n", myrank, node_cnt);
-	MPI_Reduce(&node_cnt, &total_cnt, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+#endif
+    MPI_Reduce(&node_cnt, &total_cnt, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 	total_eles = (float *)malloc(total_cnt * sizeof(float));
 	//gather node_cnts and node_eles of each node on master node
-	if(myrank == MASTER) printf("rank[MASTER] total_cnt: %d\n", total_cnt);
-	MPI_Gather(&node_cnt, 1, MPI_INT, node_cnts, 1, MPI_INT, MASTER, MPI_COMM_WORLD);
+#ifdef DEBUG
+    if(myrank == MASTER) printf("rank[MASTER] total_cnt: %d\n", total_cnt);
+#endif
+    MPI_Gather(&node_cnt, 1, MPI_INT, node_cnts, 1, MPI_INT, MASTER, MPI_COMM_WORLD);
 	if(myrank == MASTER){
 		for(i = 0; i < (unsigned int)proc_num; ++i){
 			if(i == 0){
@@ -206,10 +210,13 @@ int main(int argc, char **argv){
 	MPI_Gatherv(node_eles, node_cnt, MPI_FLOAT, total_eles, node_cnts, disps, MPI_FLOAT, 0, MPI_COMM_WORLD);
 	if(myrank == MASTER){
 		//partial quick sort total_eles to get the top k elements
-		printf("total cnt: %d\n", total_cnt);
-		sort(total_eles, total_eles + total_cnt, large_cmp);
+#ifdef DEBUG
+        printf("total cnt: %d\n", total_cnt);
+#endif
+        sort(total_eles, total_eles + total_cnt, large_cmp);
 		for(i = 0; i < k; ++i)
-			printf("rank[%d] total_eles[%d] = %f\n", myrank, i, total_eles[i]);
+			printf("%f\t", total_eles[i]);
+        printf("\n");
 	}
 	MPI_Finalize();
 	return 0;
