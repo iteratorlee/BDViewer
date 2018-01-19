@@ -1,1 +1,1 @@
-__all__ = ['jextension']
+__all__ = ['jextension', 'parallel', 'utils']

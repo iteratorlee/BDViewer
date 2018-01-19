@@ -4,7 +4,7 @@ import os
 import sys
 from tornado.web import HTTPError
 import matplotlib.pyplot as plt
-from parallel import *
+from jextension.parallel import *
 from ctypes import *
 
 def formatSize(_bytes):

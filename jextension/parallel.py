@@ -12,7 +12,7 @@ def sort_by_col(filename, col):
         return
     lines = sc.textFile(filename).flatMap(lambda x : x.split('\n'))
     lines = lines.map(lambda x : (float(x.split(',')[col]), x))
-    lines = lines.sortByKey().map(lambda (x, y) : y).collect()
+    lines = lines.sortByKey().map(lambda x, y : y).collect()
     lines = lines[0:1000]
 
     return lines

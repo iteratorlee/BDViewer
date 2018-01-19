@@ -3,8 +3,8 @@ from notebook.base.handlers import IPythonHandler
 import tornado.escape
 import os
 import time
-import utils
-from utils import formatSize
+import jextension.utils as utils
+from jextension.utils import formatSize
 
 class FileSizeHandler(IPythonHandler):
     def get(self, _filepath):
