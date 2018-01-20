@@ -33,7 +33,7 @@ class ViewTableHandler(IPythonHandler):
         if not os.path.exists(file_path):
             self.write("File does not exist")
             return
-        self.write(self.render_template('table/table.html'))
+        self.write(self.render_template('table.html'))
 
 class FileContentHandler(IPythonHandler):
     def get(self, _filepath, beg, end):
