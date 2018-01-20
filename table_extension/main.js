@@ -92,7 +92,7 @@ define([
 			    //var table_path = utils.url_path_join(base_url, "table_view", names[i].innerHTML);
                 var index = -1;
                 for(var j = 0; j < tmp_arr.length; ++j){
-                    if(tmp_arr[j] == "edit"){
+                    if(tmp_arr[j] == "edit" || tmp_arr[j] == "view"){
                         index = j + 1;
                         break;
                     }
