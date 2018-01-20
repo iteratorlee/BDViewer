@@ -14,7 +14,7 @@ define([
     'use strict';
 	
 	$.ajaxSetup({  
-    	async : false
+    	async : true
 	});  	
 
     var base_url = utils.get_body_data('baseUrl');
@@ -86,11 +86,26 @@ define([
 		var links = $(".item_link");
 		var names = $(".item_name");
 
-		console.log(links.length + " " + names.length);
 		for(var i = 0; i < links.length; ++i){
             if(names[i].innerHTML.indexOf(".csv") > 0){
-			    var table_path = utils.url_path_join(base_url, "table_view", names[i].innerHTML);
-			    links[i].setAttribute("href", table_path);
+                var tmp_arr = links[i].href.split('/');
+			    //var table_path = utils.url_path_join(base_url, "table_view", names[i].innerHTML);
+                var index = -1;
+                for(var j = 0; j < tmp_arr.length; ++j){
+                    if(tmp_arr[j] == "edit"){
+                        index = j + 1;
+                        break;
+                    }
+                }
+                var table_path = "/";
+                for(var j = index; j < tmp_arr.length; ++j){
+                    table_path += tmp_arr[j];
+                    if(j != tmp_arr.length - 1){
+                        table_path += "/";
+                    }
+                }
+                table_path = utils.url_path_join(base_url, "table_view", table_path);
+                links[i].setAttribute("href", table_path);
             }
 		}
 	}
