@@ -112,6 +112,11 @@ class FileFeatureHandler(IPythonHandler):
         ret_json = tornado.escape.json_encode(ret)
         self.write(ret_json)
 
+def _jupyter_server_extension_paths():
+    return [{
+        "module": "jextension.jextension"
+    }]
+
 def load_jupyter_server_extension(nb_server_app):
     """
     Called when the extension is loaded.

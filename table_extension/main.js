@@ -21,7 +21,7 @@ define([
 
     var config = new Configmod.ConfigSection('tree', {base_url : base_url});
     config.loaded.then(function(){
-    	add_file_meta();
+    	//add_file_meta();
 		bind_table_page();
     });
 
