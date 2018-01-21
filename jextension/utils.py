@@ -41,8 +41,8 @@ def get_line_num_py(filename):
         return line_num
 
 def get_line_num(filename):
-    app = cdll.LoadLibrary(os.path.dirname(os.path.realpath(__file__)) + '/lib/count_line.so')
-    return app.get_line_number(filename)
+    #app = cdll.LoadLibrary(os.path.dirname(os.path.realpath(__file__)) + '/lib/count_line.so')
+    return get_line_num_py(filename)  #app.get_line_number(filename)
 
 def get_tail_lines(filename):
     fd = open(filename)
