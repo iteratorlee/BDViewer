@@ -1,15 +1,28 @@
 # Check if jupyter has been installed
-command -v jupyter >/dev/null 2>&1 || { echo >&2 "I require jupyter but it's not installed.  Aborting."; exit 0; }
+command -v jupyter >/dev/null 2>&1 || { echo >&2 "BDViewer requires jupyter but it's not installed.  Aborting."; exit 0; }
+# Check if pip3 has been installed
+command -v pip3 >/dev/null 2>&1 || { echo >&2 "BDViewer requires jupyter but it's not installed.  Aborting."; exit 0; }
+# check if SPARK_HOME has been set
+if [ ${SPARK_HOME} ]; then
+    echo "Spark has been installed"
+else
+    echo "Spark has not been installed or SPARK_HOME has not been set"; exit 0;
+fi
 
 # Add ./jextension package to python (default version is 3.5)
 echo "Adding lib files..."
-cp -r ./jextension /usr/lib/python2.7
-echo "Added to python2.7 lib directory"
 cp -r ./jextension /usr/lib/python3.5
 echo "Added to python3.5 lib directory"
 
-# Modify config file to install server extension
-JUPYTER_CONFIG_PATH="/root/.jupyter"
+# Check if jupyter configuration has been generated
+if [ "$USER" = "root" ]; then
+    JUPYTER_CONFIG_PATH="/root/.jupyter"
+else
+    HOME_PATH="/home/"
+    USER_NAME=$USER
+    JUPYTER_SUFFIX="/.jupyter"
+    JUPYTER_CONFIG_PATH=${HOME_PATH}${USER_NAME}${JUPYTER_SUFFIX}
+fi
 
 if [ ! -d $JUPYTER_CONFIG_PATH ]; then
     echo "Please generate your jupyter configuration file first"
@@ -19,8 +32,11 @@ fi
 # Enable server extension
 jupyter serverextension enable --py jextension.jextension
 
-# Install json operating toolkit jq
+# Install required packages
 apt install jq
+pip3 install pandas
+pip3 install matplotlib
+apt install python3-tk
 
 # Copy front-end files
 cp ./front/templates/table/table.html /usr/local/lib/python3.5/dist-packages/notebook/templates

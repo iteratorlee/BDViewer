@@ -3,12 +3,16 @@ from notebook.base.handlers import IPythonHandler
 import tornado.escape
 import os
 import time
+import jextension.log as log
 import jextension.utils as utils
 from jextension.utils import formatSize
+
+logger = log.getLogger('jextension', log.DEBUG)
 
 class FileSizeHandler(IPythonHandler):
     def get(self, _filepath):
         file_path = _filepath
+        logger.debug('filepath: %s' % _filepath)
         if not os.path.exists(file_path):
             self.write("File does not exist")
             return
@@ -19,6 +23,7 @@ class FileSizeHandler(IPythonHandler):
 class FileDateHandler(IPythonHandler):
     def get(self, _filepath):
         file_path = _filepath
+        logger.debug('filepath: %s' % _filepath)
         if not os.path.exists(file_path):
             self.write("File does not exist")
             return
@@ -30,14 +35,15 @@ class FileDateHandler(IPythonHandler):
 class ViewTableHandler(IPythonHandler):
     def get(self, _filepath):
         file_path = _filepath
+        logger.debug('filepath: %s' % _filepath)
         if not os.path.exists(file_path):
             self.write("File does not exist")
             return
-        #self.write('test')
         self.write(self.render_template('table.html'))
 
 class FileContentHandler(IPythonHandler):
     def get(self, _filepath, beg, end):
+        logger.debug('filepath: %s' % _filepath)
         beg = int(beg)
         end = int(end)
         if not os.path.exists(_filepath):
@@ -48,6 +54,7 @@ class FileContentHandler(IPythonHandler):
 
 class DrawChatHandler(IPythonHandler):
     def get(self, _filepath, chat_type, r1, c1, r2, c2):
+        logger.debug('filepath: %s' % _filepath)
         if not os.path.exists(_filepath):
             self.write("File does not exist")
             return
@@ -70,6 +77,7 @@ class DrawChatHandler(IPythonHandler):
 
 class SortContentHandler(IPythonHandler):
     def get(self, _filepath, col):
+        logger.debug('filepath: %s' % _filepath)
         if not os.path.exists(_filepath):
             self.write("File does not exist")
             return
@@ -80,6 +88,7 @@ class SortContentHandler(IPythonHandler):
 
 class DataFeatureHandler(IPythonHandler):
     def get(self, _filepath, feature, dim, index):
+        logger.debug('filepath: %s' % _filepath)
         if not os.path.exists(_filepath):
             self.write("File does not exist")
             return
@@ -94,6 +103,7 @@ class DataFeatureHandler(IPythonHandler):
 class FileLineNumberHandler(IPythonHandler):
     def get(self, _filepath):
         _filepath = str(_filepath)
+        logger.debug('filepath: %s' % _filepath)
         if not os.path.exists(_filepath):
             self.write("File does not exist")
             return
@@ -104,6 +114,7 @@ class FileLineNumberHandler(IPythonHandler):
 class FileFeatureHandler(IPythonHandler):
     def get(self, _filepath, col):
         _filepath = str(_filepath)
+        logger.debug('filepath: %s' % _filepath)
         col = int(col)
         if not os.path.exists(_filepath):
             self.write("File does not exist")

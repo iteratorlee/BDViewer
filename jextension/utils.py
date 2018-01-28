@@ -2,10 +2,13 @@ import pandas as pd
 import numpy as np
 import os
 import sys
+import jextension.log as log
 from tornado.web import HTTPError
 import matplotlib.pyplot as plt
 from jextension.parallel import *
 from ctypes import *
+
+logger = log.getLogger('utils', log.DEBUG)
 
 def formatSize(_bytes):
     '''
@@ -41,8 +44,7 @@ def get_line_num_py(filename):
         return line_num
 
 def get_line_num(filename):
-    #app = cdll.LoadLibrary(os.path.dirname(os.path.realpath(__file__)) + '/lib/count_line.so')
-    return get_line_num_py(filename)  #app.get_line_number(filename)
+    return get_line_num_py(filename)
 
 def get_tail_lines(filename):
     fd = open(filename)
@@ -78,8 +80,7 @@ def get_lines_skip_rows(filename, beg, end):
     Get lines from line NO.beg to line NO.end
 
     '''
-    print("getting lines")
-    print("beg %d, end %d" % (beg, end))
+    logger.debug("getting lines beg %d, end %d" % (beg, end))
     if beg < 0 or end < 0:
         data = get_tail_lines(filename)
         return data
@@ -112,6 +113,7 @@ def get_lines_after_sort(filename, col):
         bcontent = ''
         for line in lines:
             bcontent = bcontent + line + '\n'
+        #logger.debug('bcontent: ' + bcontent)
         return bcontent
     except UnicodeError:
         raise HTTPError(

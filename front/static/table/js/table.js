@@ -2,8 +2,9 @@ require([
     "jquery",
     "handsontable.full",
 	"bootstrap.min",
-    "heatmap"
-], function($, handson, bs, hm){
+    "heatmap",
+    "echarts.min"
+], function($, handson, bs, hm, echarts){
     
     var get_base_url = function(url){
         var temp_array = url.split('/');
@@ -151,17 +152,18 @@ require([
                 var sreq_url = get_base_url(document.URL) + "sort_content/" + _filename + "/" + c1;
                 $.get(sreq_url, function(_data, _status, datatype="text"){
                     var _temp_arr = _data.split('\n');
-                    var _table_data = new Array();
 
+                    var _table_data = editor.tabledata;
                     for(var i = 0; i < _temp_arr.length; ++i){
                         if(_temp_arr[i] != "")
-                            _table_data[i] = _temp_arr[i].split(',');
+                            _table_data[i][c1] = _temp_arr[i];
                     }
                     editor.table.loadData(_table_data);
                     editor.tabledata = _table_data;
-                    editor.table.save_enabled = true;
+                    editor.table.save_enable = true;
                     editor.loadlines = 1000;
                     $("#line_beg").val("0");
+
                 });
             }else
                 alert("not a single column");
@@ -335,14 +337,13 @@ require([
             var c1 = parseInt($("#c1").val());
             var r2 = parseInt($("#r2").val());
             var c2 = parseInt($("#c2").val());
-            var _curr_url = document.URL;
-            var _curr_url_arr = _curr_url.split('/')
-            var _filename = _curr_url_arr[_curr_url_arr.length-1];
-            var chat_req_url = get_base_url(document.URL) + "draw_chat/" + _filename + "/0/" + r1 + "/" + c1 + "/" + r2 + "/" + c2;
-            
+            alert('developping');
+
             if(c1 > -1 && c2 > -1 && r1 > -1 && r2 > -1 && ((c1 == c2) || (r1 == r2))){
-                $.get(chat_req_url, function(_data, _status, datatype="text"){});
-                console.log("get draw_chat finish");
+                var lineChat = echarts.init(document.getElementById('Chart_body'));
+                var option = {
+                };
+
             }else
                 alert("not a single column or a single row " + r1 + " " + c1 + " " + r2 + " " + c2);
         });

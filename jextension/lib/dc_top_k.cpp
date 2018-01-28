@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <iomanip>
 #include <algorithm>
 #include "mpi.h"
 
@@ -8,7 +9,7 @@ using namespace std;
 
 #define MAXLEN 8192
 #define MASTER 0
-#define DEBUG
+//#define DEBUG
 
 /**
  * Get line number of a file
@@ -215,7 +216,7 @@ int main(int argc, char **argv){
 #endif
         sort(total_eles, total_eles + total_cnt, large_cmp);
 		for(i = 0; i < k; ++i)
-			printf("%f\t", total_eles[i]);
+			printf("%.2f\t", total_eles[i]);
         printf("\n");
 	}
 	MPI_Finalize();
