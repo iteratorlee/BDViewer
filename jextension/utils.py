@@ -4,9 +4,6 @@ import os
 import sys
 import jextension.log as log
 from tornado.web import HTTPError
-import matplotlib.pyplot as plt
-from jextension.parallel import *
-from ctypes import *
 
 logger = log.getLogger('utils', log.DEBUG)
 
@@ -107,22 +104,6 @@ def get_lines_skip_rows(filename, beg, end):
         )
     return ""
 
-def get_lines_after_sort(filename, col):
-    lines = sort_by_col(filename, col)
-    try:
-        bcontent = ''
-        for line in lines:
-            bcontent = bcontent + line + '\n'
-        #logger.debug('bcontent: ' + bcontent)
-        return bcontent
-    except UnicodeError:
-        raise HTTPError(
-            400,
-            "%s is not UTF-8 encoded" % filename,
-            reason='bad format'
-        )
-    return ''
-
 def get_file_line_number_rough(filename):
     '''
     Get line number of a file roughly,
@@ -143,80 +124,3 @@ def get_file_line_number(filename):
     with open(filename) as fp:
         return sum(1 for x in fp)
 
-def get_row_sum(filename, row):
-    data_arr = pd.read_csv(filename, index_col=False, skiprows=row, nrows=1)
-    return np.sum(data_arr.as_matrix())
-
-def get_row_ave(filename, row):
-    data_arr = pd.read_csv(filename, index_col=False, skiprows=row, nrows=1)
-    return np.mean(data_arr.as_matrix())
-    
-
-def get_data_feature(filename, feature_type, dim, index):
-    '''
-    Get the summision or average value of a column or a row
-    '''
-    if dim == 0:
-        #column
-        if feature_type == 0:
-            ret = get_col_sum(filename, index)
-        elif feature_type == 1:
-            ret = get_col_ave(filename, index)
-        else:
-            ret = -1
-    elif dim == 1:
-        #row
-        if feature_type == 0:
-            ret = get_row_sum(filename, index)
-        elif feature_type == 1:
-            ret = get_row_ave(filename, index)
-        else:
-            ret = -2
-
-    return ret
-
-def cal_freq(filename, col):
-    freq = cal_freq_parallel(filename, col)
-    return dict(freq)
-
-def draw_line_chat(filename, r1, c1, r2, c2):
-    if r1 == r2:
-        print(r1, c1, r2, c2)
-        data_arr = pd.read_csv(filename, index_col=False, skiprows=r1, nrows=1)
-        data_arr = data_arr.as_matrix()
-        data_arr = data_arr[0, c1:c2]
-        datasize = len(data_arr)
-        x = range(datasize)
-
-        plt.title('Untitled')
-        plt.xlabel('index')
-        plt.ylabel('Row ' + str(r1))
-        plt.plot(x, data_arr, 'r', label='Untitled')
-        plt.xticks(x, x, rotation=0)
-
-        plt.legend(bbox_to_anchor=[0.3, 1])
-        plt.grid()
-        plt.show()
-    elif c1 == c2:
-        data_arr = pd.read_csv(filename, index_col=False, skiprows=r1, nrows=abs(r2-r1)+1)
-        data_arr = data_arr.as_matrix()
-        data_arr = data_arr[:, c1]
-        datasize = len(data_arr)
-        x = range(datasize)
-
-        plt.title('Untitled')
-        plt.xlabel('index')
-        plt.ylabel('Column ' + str(c1))
-        plt.plot(x, data_arr, 'r', label='Untitled')
-        plt.xticks(x, x, rotation=0)
-
-        plt.legend(bbox_to_anchor = [0.3, 1])
-        plt.grid()
-        plt.show()
-
-def draw_bar_chat(filename, r1, c1, r2, c2):
-    
-    pass
-
-def draw_pie_chat(filename, r1, c1, r2, c2):
-    pass

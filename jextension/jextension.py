@@ -52,54 +52,6 @@ class FileContentHandler(IPythonHandler):
         lines = utils.get_lines_skip_rows(_filepath, beg, end)
         self.write(lines)
 
-class DrawChatHandler(IPythonHandler):
-    def get(self, _filepath, chat_type, r1, c1, r2, c2):
-        logger.debug('filepath: %s' % _filepath)
-        if not os.path.exists(_filepath):
-            self.write("File does not exist")
-            return
-        r1 = int(r1)
-        c1 = int(c1)
-        r2 = int(r2)
-        c2 = int(c2)
-
-        if int(chat_type) == 0:
-            #draw a line chat
-            utils.draw_line_chat(_filepath, r1, c1, r2, c2)
-        elif int(chat_type) == 1:
-            #draw a bar chat
-            utils.draw_bar_chat(_filepath, r1, c1, r2, c2)
-        elif int(chat_type) == 2:
-            #draw a pie chat
-            utils.draw_pie_chat(_filepath, r1, c1, r2, c2)
-        else:
-            self.write("No such kind of chat")
-
-class SortContentHandler(IPythonHandler):
-    def get(self, _filepath, col):
-        logger.debug('filepath: %s' % _filepath)
-        if not os.path.exists(_filepath):
-            self.write("File does not exist")
-            return
-        col = int(col)
-        
-        lines = utils.get_lines_after_sort(_filepath, col)
-        self.write(lines)
-
-class DataFeatureHandler(IPythonHandler):
-    def get(self, _filepath, feature, dim, index):
-        logger.debug('filepath: %s' % _filepath)
-        if not os.path.exists(_filepath):
-            self.write("File does not exist")
-            return
-        feature = int(feature)
-        dim = int(dim)
-        index = int(index)
-
-        ret = str(utils.get_data_feature(_filepath, feature, dim, index))
-        print(ret)
-        self.write(ret)
-
 class FileLineNumberHandler(IPythonHandler):
     def get(self, _filepath):
         _filepath = str(_filepath)
@@ -110,19 +62,6 @@ class FileLineNumberHandler(IPythonHandler):
         line_num = str(utils.get_line_num(_filepath))
         print("file %s with %s lines" % (_filepath, line_num))
         self.write(line_num)
-
-class FileFeatureHandler(IPythonHandler):
-    def get(self, _filepath, col):
-        _filepath = str(_filepath)
-        logger.debug('filepath: %s' % _filepath)
-        col = int(col)
-        if not os.path.exists(_filepath):
-            self.write("File does not exist")
-            return
-        ret = utils.cal_freq(_filepath, col)
-        print("file %s request for global feature of column %s" % (_filepath, str(col)))
-        ret_json = tornado.escape.json_encode(ret)
-        self.write(ret_json)
 
 def _jupyter_server_extension_paths():
     return [{
@@ -144,19 +83,11 @@ def load_jupyter_server_extension(nb_server_app):
     file_date_pattern = url_path_join(web_app.settings['base_url'], '/filedate/(.+$)')
     view_table_pattern = url_path_join(web_app.settings['base_url'], '/table_view/(.+$)')
     file_content_pattern = url_path_join(web_app.settings['base_url'], '/file_content/([^/]+)/(-?[0-9]+)/(-?[0-9]+$)')
-    draw_chat_pattern = url_path_join(web_app.settings['base_url'], '/draw_chat/([^/]+)/([0-2])/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+$)')
-    sort_content_pattern = url_path_join(web_app.settings['base_url'], '/sort_content/([^/]+)/([0-9]+$)')
-    data_feature_pattern = url_path_join(web_app.settings['base_url'], '/data_feature/([^/]+)/([0-9])/([0-1])/([0-9]+$)')
     line_number_pattern = url_path_join(web_app.settings['base_url'], '/line_num/(.+$)')
-    file_feature_pattern = url_path_join(web_app.settings['base_url'], '/file_feature/([^/]+)/([0-9]+$)')
     web_app.add_handlers(host_pattern, [
                 (file_size_pattern, FileSizeHandler),
                 (file_date_pattern, FileDateHandler),
                 (view_table_pattern, ViewTableHandler),
                 (file_content_pattern, FileContentHandler),
-                (draw_chat_pattern, DrawChatHandler),
-                (sort_content_pattern, SortContentHandler),
-                (data_feature_pattern, DataFeatureHandler),
-                (line_number_pattern, FileLineNumberHandler),
-                (file_feature_pattern, FileFeatureHandler)
+                (line_number_pattern, FileLineNumberHandler)
     ])

@@ -1,13 +1,7 @@
 # Check if jupyter has been installed
 command -v jupyter >/dev/null 2>&1 || { echo >&2 "BDViewer requires jupyter but it's not installed.  Aborting."; exit 0; }
 # Check if pip3 has been installed
-command -v pip3 >/dev/null 2>&1 || { echo >&2 "BDViewer requires jupyter but it's not installed.  Aborting."; exit 0; }
-# check if SPARK_HOME has been set
-if [ ${SPARK_HOME} ]; then
-    echo "Spark has been installed"
-else
-    echo "Spark has not been installed or SPARK_HOME has not been set"; exit 0;
-fi
+command -v pip3 >/dev/null 2>&1 || { echo >&2 "BDViewer requires pip3 but it's not installed.  Aborting."; exit 0; }
 
 # Add ./jextension package to python (default version is 3.5)
 echo "Adding lib files..."
@@ -35,8 +29,6 @@ jupyter serverextension enable --py jextension.jextension
 # Install required packages
 apt install jq
 pip3 install pandas
-pip3 install matplotlib
-apt install python3-tk
 
 # Copy front-end files
 cp ./front/templates/table/table.html /usr/local/lib/python3.5/dist-packages/notebook/templates
