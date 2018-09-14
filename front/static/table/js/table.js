@@ -115,7 +115,7 @@ require([
             var _curr_url_arr = _curr_url.split('/')
             var _filename = _curr_url_arr[_curr_url_arr.length-1];
 
-            var dreq_url = _curr_url.replace(/(.*table_view/, '$1file_content') + "/" + starts + "/" + ends;
+            var dreq_url = _curr_url.replace(/(.*)table_view/, '$1file_content') + "/" + starts + "/" + ends;
 
             $.get(dreq_url, function(_data, _status, datatype="text"){
                 console.log(_data);
