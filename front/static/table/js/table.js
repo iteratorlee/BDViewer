@@ -1,7 +1,7 @@
 require([
     "jquery",
     "handsontable.full",
-	"bootstrap.min",
+    "bootstrap.min",
     "heatmap",
     "echarts.min"
 ], function($, handson, bs, hm, echarts){
@@ -23,7 +23,7 @@ require([
 
     console.log(filename);
 
-    var req_url = get_base_url(curr_url) + "file_content/" + filename + "/0/999";
+    var req_url = curr_url.replace(/(.*)table_view/, '$1file_content') + "/0/999";
     $.get(req_url, function(data, status, datatype="text"){
         var container = document.getElementById("table_content");
         var temp_arr = data.split('\n');
@@ -37,8 +37,8 @@ require([
         var table = new Handsontable(container, {
             data: table_data,
             rowHeaders: function(index){
-				return index + parseInt($("#line_beg").val());
-			},
+                return index + parseInt($("#line_beg").val());
+            },
             colHeaders: true,
             dropdownMenu: true,
             width: $(document).width(),
@@ -56,7 +56,7 @@ require([
         var _tmp_url = document.URL;
         var _tmp_url_arr = _tmp_url.split('/')
         var _tmp_name = _tmp_url_arr[_tmp_url_arr.length-1];
-        var lnreq_url = get_base_url(_tmp_url) + "line_num/" + _tmp_name;
+        var lnreq_url = _tmp_url.replace(/(.*)table_view/, '$1line_num');
         console.log(lnreq_url);
         $.get(lnreq_url, function(_data, _status, datatype="text"){
             //display line_num on the page
@@ -81,8 +81,8 @@ require([
                     var _filename = _curr_url_arr[_curr_url_arr.length-1];
                 
                     var line_beg = parseInt($("#line_beg").val());
-                    var dreq_url = get_base_url(document.URL) + "file_content/" + _filename + "/" + (editor.loadlines+line_beg-99) + "/" + (editor.loadlines+line_beg);
-                
+                    var dreq_url = curr_url.replace(/(.*)table_view/, '$1file_content') + "/" + (editor.loadlines+line_beg-99) + "/" + (editor.loadlines+line_beg);
+
                     $.get(dreq_url, function(_data, _status, datatype="text"){
                         var _temp_arr = _data.split('\n');
                         var _table_data = new Array();
@@ -101,23 +101,23 @@ require([
             }
         }, table);
 
-		$("#confirm_skip").click(function(){
-			console.log("confirm entered");
-        	var starts = parseInt($("#line_beg").val());
-        	var ends = starts + 999;
-			editor.loadlines = ends - starts + 1;
+        $("#confirm_skip").click(function(){
+            console.log("confirm entered");
+            var starts = parseInt($("#line_beg").val());
+            var ends = starts + 999;
+            editor.loadlines = ends - starts + 1;
             if(starts < 0){
                 starts = -1;
                 ends = -1;
                 $("#line_beg").val("-999");
             }
-        	var _curr_url = document.URL;
-        	var _curr_url_arr = _curr_url.split('/')
-        	var _filename = _curr_url_arr[_curr_url_arr.length-1];
+            var _curr_url = document.URL;
+            var _curr_url_arr = _curr_url.split('/')
+            var _filename = _curr_url_arr[_curr_url_arr.length-1];
 
-            var dreq_url = get_base_url(document.URL) + "file_content/" + _filename + "/" + starts + "/" + ends;
-           	
-			$.get(dreq_url, function(_data, _status, datatype="text"){
+            var dreq_url = _curr_url.replace(/(.*table_view/, '$1file_content') + "/" + starts + "/" + ends;
+
+            $.get(dreq_url, function(_data, _status, datatype="text"){
                 console.log(_data);
                 var _temp_arr = _data.split('\n');
                 var _table_data = new Array();
@@ -132,8 +132,8 @@ require([
                 editor.table.save_enabled = true;
             });
 
-        	$("#myModal").modal('hide');
-    	});
+            $("#myModal").modal('hide');
+        });
         
         $(".chat_sort").click(function(){
             console.log("sort entered");
@@ -176,7 +176,7 @@ require([
             var r2 = parseInt($("#r2").val());
             var c2 = parseInt($("#c2").val());
             var featured = parseInt($("#featured").val());
-			var _curr_url = document.URL;
+            var _curr_url = document.URL;
             var _curr_url_arr = _curr_url.split('/')
             var _filename = _curr_url_arr[_curr_url_arr.length-1];
             // /data_feature/filename/feature/dim/index
@@ -250,14 +250,14 @@ require([
                 alert("not a single column or a single row " + r1 + " " + c1 + " " + r2 + " " + c2);
         });
 
-		$(".chat_ave").click(function(){
+        $(".chat_ave").click(function(){
             console.log("ave entered");
             var r1 = parseInt($("#r1").val());
             var c1 = parseInt($("#c1").val());
             var r2 = parseInt($("#r2").val());
             var c2 = parseInt($("#c2").val());
             var featured = parseInt($("#featured").val());
-			var _curr_url = document.URL;
+            var _curr_url = document.URL;
             var _curr_url_arr = _curr_url.split('/')
             var _filename = _curr_url_arr[_curr_url_arr.length-1];
             // /data_feature/filename/feature/dim/index
@@ -357,7 +357,7 @@ require([
         });
 
         $(".chat_feature").click(function(){
-			var r1 = parseInt($("#r1").val());
+            var r1 = parseInt($("#r1").val());
             var c1 = parseInt($("#c1").val());
             var r2 = parseInt($("#r2").val());
             var c2 = parseInt($("#c2").val());
@@ -405,8 +405,6 @@ require([
                         data : points
                     };
                     heatmapInstance.setData(data);
-
-                    //console.log(freq_arr);
                 });
             }else
                 alert("Please select a whole column by clicking its top");

@@ -7,7 +7,7 @@ import jextension.log as log
 import jextension.utils as utils
 from jextension.utils import formatSize
 
-logger = log.getLogger('jextension', log.DEBUG)
+logger = log.getLogger(app_name='jextension', filename='/var/log/BDViewer/jextension.log', level=log.DEBUG)
 
 class FileSizeHandler(IPythonHandler):
     def get(self, _filepath):
@@ -37,12 +37,15 @@ class ViewTableHandler(IPythonHandler):
         file_path = _filepath
         logger.debug('filepath: %s' % _filepath)
         if not os.path.exists(file_path):
-            self.write("File does not exist")
+            self.write("File %s does not exist" % file_path)
             return
         self.write(self.render_template('table.html'))
 
 class FileContentHandler(IPythonHandler):
-    def get(self, _filepath, beg, end):
+    def get(self, _filepath):
+        arr = _filepath.split('/')
+        beg, end = int(arr[-2]), int(arr[-1])
+        _filepath = '/'.join(arr[:-2])
         logger.debug('filepath: %s' % _filepath)
         beg = int(beg)
         end = int(end)
@@ -82,7 +85,7 @@ def load_jupyter_server_extension(nb_server_app):
     file_size_pattern = url_path_join(web_app.settings['base_url'], '/filesize/(.+$)')
     file_date_pattern = url_path_join(web_app.settings['base_url'], '/filedate/(.+$)')
     view_table_pattern = url_path_join(web_app.settings['base_url'], '/table_view/(.+$)')
-    file_content_pattern = url_path_join(web_app.settings['base_url'], '/file_content/([^/]+)/(-?[0-9]+)/(-?[0-9]+$)')
+    file_content_pattern = url_path_join(web_app.settings['base_url'], '/file_content/(.+$)')
     line_number_pattern = url_path_join(web_app.settings['base_url'], '/line_num/(.+$)')
     web_app.add_handlers(host_pattern, [
                 (file_size_pattern, FileSizeHandler),

@@ -23,8 +23,23 @@ def getLoggerInternal(app_name):
 
     return logger
 
-def getLogger(app_name, level=logging.WARN):
-    logger = getLoggerInternal(app_name)
+def getLoggerWithPath(app_name, filename):
+    logger = getLoggerWithoutConfig(app_name)
+
+    formatter = logging.Formatter('%(asctime)s %(levelname)-8s: %(message)s')
+    console_handler = logging.FileHandler(filename)
+    console_handler.setFormatter(formatter)
+
+    logger.addHandler(console_handler)
+
+    return logger
+
+def getLogger(app_name, filename=None, level=logging.WARN):
+    logger = None
+    if filename is None:
+        logger = getLoggerInternal(app_name)
+    else:
+        logger = getLoggerWithPath(app_name, filename)
     logger.setLevel(level)
 
     return logger

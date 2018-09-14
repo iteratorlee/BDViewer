@@ -5,7 +5,7 @@ import sys
 import jextension.log as log
 from tornado.web import HTTPError
 
-logger = log.getLogger('utils', log.DEBUG)
+logger = log.getLogger(app_name='utils', filename='/var/log/BDViewer/jextension.log', level=log.DEBUG)
 
 def formatSize(_bytes):
     '''
@@ -77,14 +77,14 @@ def get_lines_skip_rows(filename, beg, end):
     Get lines from line NO.beg to line NO.end
 
     '''
-    logger.debug("getting lines beg %d, end %d" % (beg, end))
+    logger.debug("getting lines of %s beg %d, end %d" % (filename, beg, end))
     if beg < 0 or end < 0:
+        logger.debug('getting tail lines of %s' % filename)
         data = get_tail_lines(filename)
         return data
 
     reader = pd.read_csv(filename, index_col=False, skiprows=beg, nrows=end-beg+1)
     data = reader.to_csv().split('\n')
-    
 
     for i in range(len(data)):
         data[i] = data[i][data[i].find(',') + 1 : len(data[i])]
@@ -94,7 +94,6 @@ def get_lines_skip_rows(filename, beg, end):
         bcontent = ''
         for line in data:
             bcontent = bcontent + line
-        #print(bcontent)
         return bcontent
     except UnicodeError:
         raise HTTPError(
