@@ -3,6 +3,7 @@ define([
     'base/js/utils',
     'base/js/events',
     'tree/js/notebooklist',
+    'tree/js/sessionlist',
     'services/config',
     'jqueryui'
 ], function(
@@ -10,6 +11,7 @@ define([
     utils,
     events,
     notebooklist,
+    sessionlist,
     Configmod,
     $
 ) {
@@ -20,12 +22,84 @@ define([
     });
 
     var base_url = utils.get_body_data('baseUrl');
+    var selected = [];
 
     var config = new Configmod.ConfigSection('tree', {base_url : base_url});
     config.loaded.then(function(){
         //add_file_meta();
-        bind_table_page();
+        add_button();
+        var f_load_sessions = sessionlist.SesssionList.prototype.load_sessions;
+        var f_sessions_loaded = sessionlist.SesssionList.prototype.sessions_loaded;
+        sessionlist.SesssionList.prototype.sessions_loaded = function(data) {
+            f_sessions_loaded(data);
+        }
+        sessionlist.SesssionList.prototype.load_sessions = function() {
+            f_load_sessions();
+            add_button();
+        }
+        //bind_table_page();
     });
+
+    function add_button() {
+        var dynamic_buttons = $('.dynamic-buttons');
+        var button = $('<button title="SmartOpen selected" aria-label="SmartOpen selected" class="smartopen-button btn btn-default btn-xs">Smart Open</button>')
+            .css('display', 'none')
+        $('.edit-button').after(button);
+        $('.list_item.row').each(function(index, item) {
+            $(item).bind('click', csv_selection_changed);
+        });
+        $('.smartopen-button').click(function() {
+            selected.forEach(function(item) {
+                var table_path = item.path;
+                var table_req_url = utils.url_path_join(base_url, "table_view", table_path);
+                window.open(table_req_url, Jupyter._target);
+            });
+        });
+    }
+
+    function csv_selection_changed() {
+        selected = [];
+        var checked = 0;
+        var has_running_notebook = false;
+        var has_directory = false;
+        var has_file = false;
+
+        $('.list_item :checked').each(function(index, item) {
+            var parent = $(item).parent().parent();
+
+            // If the item doesn't have an upload button, isn't the
+            // breadcrumbs and isn't the parent folder '..', then it can be selected.
+            // Breadcrumbs path == ''.
+            if (parent.find('.upload_button').length === 0 && parent.data('path') !== '') {
+                checked++;
+                selected.push({
+                    name: parent.data('name'),
+                    path: parent.data('path'),
+                    type: parent.data('type')
+                });
+
+                // Set flags according to what is selected.  Flags are later
+                // used to decide which action buttons are visible.
+                has_running_notebook = has_running_notebook ||
+                    (parent.data('type') === 'notebook' && that.sessions[parent.data('path')] !== undefined);
+                has_file = has_file || (parent.data('type') === 'file');
+                has_directory = has_directory || (parent.data('type') === 'directory');
+            }
+        });
+
+        if (selected.length == 1 && !has_running_notebook && selected[0]['name'].indexOf('.csv') > 0) {
+            $('.smartopen-button').css('display', 'inline-block');
+        } else {
+            $('.smartopen-button').css('display', 'none');
+        }
+
+		if (checked > 0) {
+            $('.dynamic-instructions').hide();
+        } else {
+            $('.dynamic-instructions').show();
+            $('.smartopen-button').css('display', 'none');
+        }
+    }
 
     /**
      * Display file size and modified date on notebook tree page
