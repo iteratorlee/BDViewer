@@ -23,6 +23,11 @@ if [ ! -d $JUPYTER_CONFIG_PATH ]; then
     exit 0
 fi
 
+# Create BDViewer log path
+if [ ! -d "/var/log/BDViewer" ]; then
+    mkdir /var/log/BDViewer
+fi
+
 # Enable server extension
 jupyter serverextension enable --py jextension.jextension
 
