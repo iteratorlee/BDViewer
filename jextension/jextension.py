@@ -12,7 +12,7 @@ logger = log.getLogger(app_name='jextension', filename='/var/log/BDViewer/jexten
 class FileSizeHandler(IPythonHandler):
     def get(self, _filepath):
         file_path = _filepath
-        logger.debug('filepath: %s' % _filepath)
+        logger.debug('In FileSizeHandler, filepath: %s' % _filepath)
         if not os.path.exists(file_path):
             self.write("File does not exist")
             return
@@ -23,7 +23,7 @@ class FileSizeHandler(IPythonHandler):
 class FileDateHandler(IPythonHandler):
     def get(self, _filepath):
         file_path = _filepath
-        logger.debug('filepath: %s' % _filepath)
+        logger.debug('In FileDateHandler, filepath: %s' % _filepath)
         if not os.path.exists(file_path):
             self.write("File does not exist")
             return
@@ -35,7 +35,7 @@ class FileDateHandler(IPythonHandler):
 class ViewTableHandler(IPythonHandler):
     def get(self, _filepath):
         file_path = _filepath
-        logger.debug('filepath: %s' % _filepath)
+        logger.debug('In ViewTableHandler, filepath: %s' % _filepath)
         if not os.path.exists(file_path):
             self.write("File %s does not exist" % file_path)
             return
@@ -46,7 +46,7 @@ class FileContentHandler(IPythonHandler):
         arr = _filepath.split('/')
         beg, end = int(arr[-2]), int(arr[-1])
         _filepath = '/'.join(arr[:-2])
-        logger.debug('filepath: %s' % _filepath)
+        logger.debug('In FileContentHandler, filepath: %s' % _filepath)
         beg = int(beg)
         end = int(end)
         if not os.path.exists(_filepath):
@@ -58,13 +58,40 @@ class FileContentHandler(IPythonHandler):
 class FileLineNumberHandler(IPythonHandler):
     def get(self, _filepath):
         _filepath = str(_filepath)
-        logger.debug('filepath: %s' % _filepath)
+        logger.debug('In FileLineNumberHandler, filepath: %s' % _filepath)
         if not os.path.exists(_filepath):
             self.write("File does not exist")
             return
         line_num = str(utils.get_line_num(_filepath))
-        print("file %s with %s lines" % (_filepath, line_num))
+        logger.info("file %s with %s lines" % (_filepath, line_num))
         self.write(line_num)
+
+class SortContentHandler(IPythonHandler):
+    def get(self, _filepath):
+        arr = _filepath.split('/')
+        col = int(arr[-1])
+        _filepath = '/'.join(arr[:-1])
+        logger.debug('In SortContentHandler, filepath: %s' % _filepath)
+        if not os.path.exists(_filepath):
+            self.write("File does not exist")
+            return
+        
+        lines = utils.get_lines_after_sort(_filepath, col)
+        self.write(lines)
+
+class DataFeatureHandler(IPythonHandler):
+    def get(self, _filepath):
+        logger.debug('In DataFeatureHandler, filepath: %s' % _filepath)
+        arr = _filepath.split('/')
+        feature, dim, index = int(arr[-3]), int(arr[-2]), int(arr[-1])
+        _filepath = '/'.join(arr[:-3])
+        if not os.path.exists(_filepath):
+            self.write("File does not exist")
+            return
+
+        ret = str(utils.get_data_feature(_filepath, feature, dim, index))
+        print(ret)
+        self.write(ret)
 
 def _jupyter_server_extension_paths():
     return [{
@@ -87,10 +114,15 @@ def load_jupyter_server_extension(nb_server_app):
     view_table_pattern = url_path_join(web_app.settings['base_url'], '/table_view/(.+$)')
     file_content_pattern = url_path_join(web_app.settings['base_url'], '/file_content/(.+$)')
     line_number_pattern = url_path_join(web_app.settings['base_url'], '/line_num/(.+$)')
+    sort_content_pattern = url_path_join(web_app.settings['base_url'], '/sort_content/(.+$)')
+    data_feature_pattern = url_path_join(web_app.settings['base_url'], '/data_feature/(.+$)')
+
     web_app.add_handlers(host_pattern, [
                 (file_size_pattern, FileSizeHandler),
                 (file_date_pattern, FileDateHandler),
                 (view_table_pattern, ViewTableHandler),
                 (file_content_pattern, FileContentHandler),
-                (line_number_pattern, FileLineNumberHandler)
+                (line_number_pattern, FileLineNumberHandler),
+                (sort_content_pattern, SortContentHandler),
+                (data_feature_pattern, DataFeatureHandler)
     ])

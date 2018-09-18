@@ -149,7 +149,8 @@ require([
                 //send a post request to server(sort by col)
                 //get the largest 1000 line
                 //alert("Section you selected: " + r1 + " " + c1 + " " + r2 + " " + c2);
-                var sreq_url = get_base_url(document.URL) + "sort_content/" + _filename + "/" + c1;
+                //var sreq_url = get_base_url(document.URL) + "sort_content/" + _filename + "/" + c1;
+                var sreq_url = document.URL.replace(/(.*)table_view/, '$1sort_content') + "/" + c1;
                 $.get(sreq_url, function(_data, _status, datatype="text"){
                     var _temp_arr = _data.split('\n');
 
@@ -180,7 +181,8 @@ require([
             var _curr_url_arr = _curr_url.split('/')
             var _filename = _curr_url_arr[_curr_url_arr.length-1];
             // /data_feature/filename/feature/dim/index
-            var sum_req_url = get_base_url(document.URL) + "data_feature/" + _filename + "/0";
+            //var sum_req_url = get_base_url(document.URL) + "data_feature/" + _filename + "/0";
+            var sum_req_url = document.URL.replace(/(.*)table_view/, '$1data_feature') + "/0"
 
             if(c1 > -1 && c2 > -1 && r1 > -1 && r2 > -1){
                 if(c1 == c2 || r1 == r2){
@@ -261,7 +263,7 @@ require([
             var _curr_url_arr = _curr_url.split('/')
             var _filename = _curr_url_arr[_curr_url_arr.length-1];
             // /data_feature/filename/feature/dim/index
-            var ave_req_url = get_base_url(document.URL) + "data_feature/" + _filename + "/1";
+            var ave_req_url = document.URL.replace(/(.*)table_view/, '$1data_feature') + "/1"
 
             if(c1 > -1 && c2 > -1 && r1 > -1 && r2 > -1){
                 if(c1 == c2 || r1 == r2){
