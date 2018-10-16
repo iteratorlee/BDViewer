@@ -1,19 +1,19 @@
 define([
+    'jquery',
     'base/js/namespace',
     'base/js/utils',
     'base/js/events',
     'tree/js/notebooklist',
     'tree/js/sessionlist',
-    'services/config',
-    'jqueryui'
+    'services/config'
 ], function(
+    $,
     Jupyter,
     utils,
     events,
     notebooklist,
     sessionlist,
-    Configmod,
-    $
+    Configmod
 ) {
     'use strict';
 
@@ -26,18 +26,7 @@ define([
 
     var config = new Configmod.ConfigSection('tree', {base_url : base_url});
     config.loaded.then(function(){
-        //add_file_meta();
         add_button();
-        var f_load_sessions = sessionlist.SesssionList.prototype.load_sessions;
-        var f_sessions_loaded = sessionlist.SesssionList.prototype.sessions_loaded;
-        sessionlist.SesssionList.prototype.sessions_loaded = function(data) {
-            f_sessions_loaded(data);
-        }
-        sessionlist.SesssionList.prototype.load_sessions = function() {
-            f_load_sessions();
-            add_button();
-        }
-        //bind_table_page();
     });
 
     function add_button() {
@@ -45,9 +34,7 @@ define([
         var button = $('<button title="SmartOpen selected" aria-label="SmartOpen selected" class="smartopen-button btn btn-default btn-xs">Smart Open</button>')
             .css('display', 'none')
         $('.edit-button').after(button);
-        $('.list_item.row').each(function(index, item) {
-            $(item).bind('click', csv_selection_changed);
-        });
+        $('#notebook_list').delegate('.list_item.row', 'click', csv_selection_changed);
         $('.smartopen-button').click(function() {
             selected.forEach(function(item) {
                 var table_path = item.path;
@@ -80,8 +67,8 @@ define([
 
                 // Set flags according to what is selected.  Flags are later
                 // used to decide which action buttons are visible.
-                has_running_notebook = has_running_notebook ||
-                    (parent.data('type') === 'notebook' && that.sessions[parent.data('path')] !== undefined);
+                //has_running_notebook = has_running_notebook ||
+                    //(parent.data('type') === 'notebook' && that.sessions[parent.data('path')] !== undefined);
                 has_file = has_file || (parent.data('type') === 'file');
                 has_directory = has_directory || (parent.data('type') === 'directory');
             }
